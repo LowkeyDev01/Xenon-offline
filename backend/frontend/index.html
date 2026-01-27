@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xenon</title>
+  <link rel="icon" href="logo.png">
+  <link href="./src/output.css" rel="stylesheet">
+  <link rel="stylesheet" href="./src/style.css">
+</head>
+<!--Where the body is-->
+
+<body class="bg-white text-black dark:bg-zinc-950 dark:text-white px-4 lg:px-6">
+  <div class="appear panel flex flex-col min-h-screen w-full items-center relative" id="Movies"> <!--Movie Section-->
+    <div class="w-full max-w-10xl justify-center items-center grid grid-cols-2 py-3">
+      <div>
+        <p
+          class="text-lg inline-block font-bold lg:text-2xl bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          MOVIES</p>
+      </div>
+      <div class="flex justify-end w-full items-center">
+        <i data-lucide="search" class="w-5 h-5 font-bold cursor-pointer" id="searchmovies"></i>
+      </div>
+    </div>
+    <div class="max-w-10xl w-full relative shadow-xl rounded-xl">
+      <img src="./images/as.png" class="h-50 w-full object-cover rounded-xl lg:h-90"
+        id="image"><!--Image Preview stuf-->
+      <div
+        class="absolute w-8 h-8 bg-gray-100 rounded-full top-2/5 opacity-20 left-0 flex justify-center items-center hover:opacity-50 lg:w-12 lg:h-12"
+        id="left">
+        <i data-lucide="chevron-left" class="text-black text-lg lg:text-2xl"></i>
+      </div>
+      <div
+        class="absolute w-8 h-8 bg-gray-100 rounded-full top-2/5 opacity-20 right-0 flex justify-center items-center hover:opacity-50 lg:w-12 lg:h-12"
+        id="right">
+        <i data-lucide="chevron-right" class="text-black text-lg lg:text-2xl"></i>
+      </div>
+    </div>
+    <p class="w-full py-2 font-bold text-lg lg:text-2xl">New releases</p>
+    <div class="flex gap-2 items-start w-full py-2 overflow-auto">
+      <p
+        class="tab py-1 px-4 bg-black text-white border rounded-3xl text-xs dark:bg-white cursor-pointer dark:text-black lg:text-base">
+        All</p>
+      <p
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        Comedy</p>
+      <p
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        Romance</p>
+      <p
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        Anime</p>
+    </div>
+    <div class="w-full max-w-10xl flex-wrap flex justify-center gap-4 items-center">
+      <div class="w-full md:max-w-80 mee" data-title="Maid-sama_-_06_BD_1080p_DHD"
+        data-src="AnimePahe_Kaichou_wa_Maid-sama_-_06_BD_1080p_DHD.mp4">
+        <img src="images/as.png" class="h-50 w-full object-fill rounded-lg">
+        <div class="w-full flex justify-center items-center h-12 rounded-b-lg">Attack on Titans: Ep4 S2</div>
+      </div>
+      <div class="w-full md:max-w-80 mee">
+        <img src="images/images.jpeg" class="h-50 w-full object-fill rounded-lg">
+        <div class="w-full flex justify-center h-12 items-center rounded-b-lg">Attack on Titans: Ep4 S2</div>
+      </div>
+      <div class="w-full md:max-w-80 mee">
+        <img src="images/js.jpeg" class="h-50 w-full object-fill rounded-lg">
+        <div class="w-full flex justify-center h-12 items-center rounded-b-lg">Attack on Titans: Ep4 S2</div>
+      </div>
+      <div class="w-full md:max-w-80 mee">
+        <img src="images/jko.jpeg" class="h-50 w-full object-fill rounded-lg">
+        <div class="w-full flex justify-center h-12 items-center rounded-b-lg">Attack on Titans: Ep4 S2</div>
+      </div>
+      <div class="w-full md:max-w-80 mee">
+        <img src="images/logo.png" class="h-50 w-full object-fill rounded-lg">
+        <div class="w-full flex justify-center h-12 items-center rounded-b-lg">Attack on Titans: Ep4 S2</div>
+      </div>
+    </div>
+    <div
+      class="fixed min-h-screen scale-0 inset-0 opacity-0 transition-all pointer-events-auto flex flex-col items-center bg-white dark:bg-zinc-950 w-full rounded-lg right-0 duration-600"
+      id="movie-box">
+      <!--Movie player box-->
+      <p class="py-4 md:py-6 font-sans text-lg md:text-4xl w-full my-0 md:my-4 flex justify-center text-center font-bold"
+        id="title"></p>
+      <video controls class="h-60 w-full lg:h-150 rounded-xl lg:w-300" src="" id="video">
+      </video>
+      <div class="flex flex-col justify-center items-center">
+        <a href="Screencast from 2026-01-03 18-30-53.webm"
+          class="text-xs px-4 py-2 rounded-md mt-4 bg-purple-500 text-white lg:text-base" download id="down">Download
+          now</a>
+      </div>
+    </div>
+    <input type="search" placeholder="Search movies"
+      class="w-full absolute -top-20 lg:w-1/2 bg-white text-black text-xs p-3 rounded-xl duration-1000 z-50"
+      id="search">
+  </div>
+  <div class="panel hidden h-screen w-10xl flex-col items-center max-w-10xl" id="Library"><!--Library-->
+    <div class="w-full max-w-10xl grid grid-cols-2 py-3">
+      <div>
+        <p
+          class="text-lg inline-block font-bold lg:text-2xl bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          Library</p>
+      </div>
+      <div class="flex justify-end w-full items-center">
+        <i class="fa-solid fa-magnifying-glass text-lg lg:text-2xl"></i>
+      </div>
+    </div>
+  </div>
+  <div class="panel hidden h-screen w-10xl" id="Sub"></div><!--Sub-->
+  <div class="panel hidden flex-col min-h-screen w-full items-center relative" id="Profile"><!--Profile-->
+    <div class="w-full max-w-10xl grid grid-cols-2 py-3">
+      <div>
+        <p
+          class="text-lg inline-block font-bold lg:text-2xl bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+          Profile</p>
+      </div>
+      <div class="flex justify-end w-full items-center">
+        <p class="text-sm text-red-600" id="logout">Log out</p>
+      </div>
+    </div>
+    <div class="max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 p-2.5 flex rounded-2xl">
+      <div>
+        <img class="w-20 h-20 rounded-full flex flex-1" src="images/jk.jpeg">
+      </div>
+      <div class="flex flex-2 px-3 flex-col justify-center">
+        <p class="text-base font-bold" id="user">Kenny</p>
+        <p class="text-sm" id="role">User</p>
+      </div>
+    </div>
+    <div class="flex max-w-10xl w-full mt-2 text-xs lg:text-lg text-red-600 rounded-lg justify-center items-center"
+      id="expire-warning">
+      Warning! Account Expires in 30d
+    </div>
+    <p class="w-full py-2 hidden text-sm max-w-5xl statname">Stats</p>
+    <div class="max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-4 hidden grid-cols-3 rounded-2xl stats">
+      <div class="flex flex-col justify-center items-center">
+        <p class="text-lg font-bold">&#x20A6;20K+</p>
+        <p class="text-xs">Earnings</p>
+      </div>
+      <div class="flex flex-col justify-center items-center">
+        <p class="text-lg">1K+</p>
+        <p class="text-xs">Downloads</p>
+      </div>
+      <div class="flex flex-col justify-center items-center">
+        <p class="text-lg font-bold">7d</p>
+        <p class="text-xs">Streaks</p>
+      </div>
+    </div>
+    <p class="w-full max-w-5xl py-3 text-sm">Settings</p>
+    <div
+      class="flex max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-3 text-sm px-4 rounded-lg justify-between items-center">
+      <p class="">Change Password</p>
+      <i data-lucide="chevron-right" class=""></i>
+    </div>
+    <div
+      class="h-screen absolute flex flex-col justify-center items-center text-center top-0 w-full bg-zinc-950 duration-700"
+      id="login-screen">
+      <form class="w-full lg:max-w-lg flex flex-col justify-center items-center lg:h-80 p-4 bg-zinc-900 rounded-lg"
+        id="login"><!--Login From-->
+        <p class="text-lg font-bold">Log in to Account</p>
+        <p class="w-full text-left text-sm mb-1">Username</p>
+        <input type="text" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="Username"
+          id="username">
+        <p class="w-full text-left text-sm my-1">Password</p>
+        <input type="password" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="Password"
+          id="password">
+        <input type="submit"
+          class="bg-linear-to-r from-blue-500 to-purple-600 rounded-md mt-4 px-6 py-1 text-white text-sm" value="Login">
+        <p class="text-blue-600 underline mt-5 text-sm" id="show-sign">No account yet? Register!</p>
+      </form>
+
+      <form class="w-full lg:max-w-lg hidden flex-col justify-center items-center lg:h-80 p-4 bg-zinc-900 rounded-lg"
+        id="sign-up"><!--Sign up From-->
+        <p class="text-lg font-bold">Create Account</p>
+        <p class="w-full text-left text-sm mb-1">Username</p>
+        <input type="text" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="Username" id="userss">
+        <p class="w-full text-left text-sm my-1">Password</p>
+        <input type="password" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="Password"
+          id="pass">
+        <p class="w-full text-left text-sm my-1">Signup Code</p>
+        <input type="text" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="Signup code"
+          id="SignupCode">
+        <input type="submit"
+          class="bg-linear-to-r from-blue-500 to-purple-600 rounded-md mt-4 px-6 py-1 text-white text-sm"
+          value="Create Account">
+        <p class="text-blue-600 underline mt-5 text-sm" id="show-log">Log in into account</p>
+      </form>
+    </div>
+
+  </div>
+
+  <!--Nav section-->
+  <div
+    class="appear left-0 right-0 mx-auto p-2 lg:p-0 flex bg-white fixed bottom-4 lg:w-md w-70  rounded-3xl text-black justify-around items-center border border-gray-300 shadow-md dark:border-0 lg:py-3">
+    <div class="flex flex-col p-2 lg:p-0 justify-center items-center btn" data-target="Movies" id="move">
+      <i data-lucide="clapperboard" class="w-5 h-5 lg:text-xl"></i>
+      <p class="text-xs hidden lg:flex">Movies</p>
+    </div>
+    <div class="flex flex-col p-2 lg:p-0 justify-center items-center btn" data-target="Library">
+      <i data-lucide="library" class="w-5 h-5 lg:text-xl"></i>
+      <p class="text-xs hidden lg:flex">Library</p>
+    </div>
+    <div
+      class="flex flex-col p-2 lg:px-4 text-white  bg-blue-500 dark:bg-purple-600 rounded-full justify-center items-center"
+      id="uploadplus">
+      <i data-lucide="upload" class="w-5 h-5 lg:text-xl"></i>
+      <p class="text-xs hidden lg:flex">Post</p>
+    </div>
+    <div class="flex flex-col p-2 lg:p-0 justify-center items-center btn" data-target="Sub">
+      <i data-lucide="wifi" class="w-5 h-5 lg:text-xl"></i>
+      <p class="text-xs hidden lg:flex">Sub</p>
+    </div>
+    <div class="flex flex-col p-2 lg:p-0 justify-center items-center btn" data-target="Profile">
+      <i data-lucide="user" class="w-5 h-5 lg:text-xl"></i>
+      <p class="text-xs hidden lg:flex">Profile</p>
+    </div>
+  </div>
+  <!--End of Nav-->
+  <div
+    class="h-screen scale-0 opacity-0 flex px-4 justify-center text-black items-center bg-black/50 w-full fixed inset-0 backdrop-blur-xs top-0 duration-600"
+    id="uploadbox"> <!--Upload box-->
+
+    <form class="max-w-md w-full bg-white rounded-xl p-4" id="Uploadform">
+      <div class="w-full flex justify-between">
+        <p
+          class="bg-linear-to-r inline-block from-blue-500 to-purple-600 bg-clip-text text-transparent text-base mb-2 font-bold">
+          Upload
+        </p>
+        <i class="w-5 h-5" data-lucide="x" id="cancel"></i>
+      </div>
+      <div
+        class="h-24 w-full border border-dotted rounded-md border-black flex flex-col items-center gap-1 justify-center"
+        id="clickimage">
+        <i data-lucide="camera" class="w-8 h-8 "></i>
+        <p class="text-xs">Tap to Upload Image</p>
+      </div>
+      <input type="file" class="hidden" id="coverFile" accept="image/*">
+      <p class="text-sm my-2 text-red-600 text-center w-full">No Image detected</p>
+      <p class="text-sm my-2">Movie Post</p>
+      <input type="text" class="border rounded-lg w-full backdrop-blur-md text-xs p-2" placeholder="Movie Title">
+      <p class="text-sm my-2">Category</p>
+      <select class="border rounded-lg w-full text-xs p-2">
+        <option value="Comedy">Comedy</option>
+        <option value="Romance">Romance</option>
+        <option value="Anime">Anime</option>
+        <option value="Action">Action</option>
+      </select>
+      <div
+        class="h-24 mt-4 w-full border border-dotted rounded-md border-black flex flex-col items-center gap-1 justify-center">
+        <i data-lucide="video" class="w-8 h-8 "></i>
+        <p class="text-xs">Tap to Upload Video</p>
+      </div>
+      <p class="text-sm my-2 text-red-600 text-center w-full">No video detected</p>
+      <div
+        class="flex bg-linear-to-r from-blue-500 to-purple-600 rounded-lg px-4 py-2 text-sm gap-2 text-white items-center justify-center">
+        <i data-lucide="arrow-up-from-line" class="w-4 h-4"></i>
+        <p>Upload</p>
+      </div>
+    </form>
+  </div>
+  <script src="node_modules/lucide/dist/umd/lucide.js"></script>
+  <script>
+    lucide.createIcons(); // replaces <i> tags automatically
+  </script>
+  <script src="./script.js"></script>
+  <script src="./fetch.js"></script>
+</body>
