@@ -95,7 +95,7 @@ function displayMovie() {
     })
 
 }
-displayMovie()
+
 const close = document.getElementById('move');
 close.addEventListener('click', () => {
     if (movieBox.classList.contains('scale-100')) {
@@ -142,7 +142,7 @@ async function autologin() {
     }
 
     try {
-        const fetches = await fetch(`${URL}/autologin`, {
+        const fetches = await fetch(`${fetchUrl}/autologin`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ sessionId })
@@ -199,7 +199,7 @@ async function login(userName, password) {
         return;
     }
     try {
-        const fetches = await fetch(`${URL}/login`, {
+        const fetches = await fetch(`${fetchUrl}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userName, password })
@@ -229,7 +229,7 @@ async function Logout(sessionId) {
     }
 
     try {
-        const fetches = await fetch(`${URL}/logout`, {
+        const fetches = await fetch(`${fetchUrl}/logout`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ sessionId })
@@ -258,7 +258,7 @@ async function signUp(username, password, signup_code) {
         return;
     }
     try {
-        const fetches = await fetch(`${URL}/register`, {
+        const fetches = await fetch(`${fetchUrl}/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password, signup_code })
@@ -289,21 +289,76 @@ closeBtn.addEventListener('click', () => {
 
 const uploadForm = document.getElementById('Uploadform');
 const coverFile = document.getElementById('coverFile');
+const movieFile = document.getElementById('file');
 const clickImg = document.getElementById('clickimage')
+const clickVideo = document.getElementById('clickVid')
+const movieTitle = document.getElementById('movieTitle');
+const category = document.getElementById('category')
 
 clickImg.addEventListener('click', () => {
     coverFile.click();
 })
 
 coverFile.addEventListener('change', () => {
-    if (coverFile.files && coverFile.files[0]) {
-        clickImg.textContent = ''
-        const img = document.createElement('img')
+    clickImg.textContent = ''
+    const img = document.createElement('img')
 
-        const url = URL.createObjectURL(coverFile.files[0]);
-        
-        img.src = url
-        img.className = 'object-cover w-full h-full'
-        clickImg.appendChild(img)
+    const url = URL.createObjectURL(coverFile.files[0]);
+
+    img.src = url
+    img.className = 'object-cover w-full h-full'
+    clickImg.appendChild(img)
+})
+
+clickVideo.addEventListener('click', () => {
+    movieFile.click();
+})
+
+movieFile.addEventListener('change', () => {
+    clickVideo.textContent = ''
+    const video = document.createElement('video')
+
+    const url = URL.createObjectURL(movieFile.files[0]);
+
+    video.src = url
+    video.className = 'object-cover w-full h-full'
+    video.controls = true;
+    clickVideo.appendChild(video)
+})
+async function uploadFile(formdata){
+    try {
+        const fetches = await fetch(`${fetchUrl}/upload`, {
+            method: 'POST',
+            body: formdata
+        })
+        const response = await fetches.json();
+        if (!fetches.ok) {
+            alert(response.error)
+            return;
+        }
+        if (response.success === true) {
+            console.log('file Uploaded!')
+            location.reload();
+        }
+    } catch (err) {
+        console.error('Upload failed:', err);
+        alert('Upload failed!');
     }
+}
+
+uploadForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!coverFile.files[0] || !movieFile.files[0] || !movieTitle || !category) {
+        return;
+    }
+    console.log(coverFile.files[0], movieFile.files[0], movieTitle.value, category.value)
+
+    const formData = new FormData();
+    formData.append('file', movieFile.files[0]);
+    formData.append('cover', coverFile.files[0]);
+    formData.append('title', movieTitle.value);
+    formData.append('category', category.value);
+    formData.append('sessionId', sessionId);
+
+    uploadFile(formData)
 })

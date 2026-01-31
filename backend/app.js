@@ -38,8 +38,8 @@ const storage = new multer.diskStorage(
             const ext = path.extname(originalName);
             const name = path.basename(originalName, ext);
 
-            const randomNum = Math.floor(Math.random() * 10000);
-            const uniqueFilename = `${name}-${randomNum}-${Date.now()}${ext}`;
+            
+            const uniqueFilename = `${crypto.randomBytes(10)}-${Date.now()}${ext}`;
             cb(null, uniqueFilename);
         }
     }
@@ -48,7 +48,7 @@ const storage = new multer.diskStorage(
 
 const upload = multer({ storage });
 
-app.post('/uploads', upload.fields([
+app.post('/upload', upload.fields([
     { name: 'file', maxCount: 1 },
     { name: 'cover', maxCount: 1 }
 ]), async (req, res) => {

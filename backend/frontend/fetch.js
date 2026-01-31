@@ -1,4 +1,4 @@
-const URL = 'http://localhost:8080'
+const fetchUrl = 'http://172.26.70.236:8080'
 const sessionId = localStorage.getItem('sessionId');
 const logoutBtn = document.getElementById('logout'); // Add this line
 

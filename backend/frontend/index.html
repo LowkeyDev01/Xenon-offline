@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="max-w-10xl w-full relative shadow-xl rounded-xl">
-      <img src="./images/as.png" class="h-50 w-full object-cover rounded-xl lg:h-90"
+      <img src="./images/banners.png" class="h-50 w-full object-cover rounded-xl lg:h-120"
         id="image"><!--Image Preview stuf-->
       <div
         class="absolute w-8 h-8 bg-gray-100 rounded-full top-2/5 opacity-20 left-0 flex justify-center items-center hover:opacity-50 lg:w-12 lg:h-12"
@@ -51,34 +51,41 @@
       <p
         class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
         Anime</p>
+      <p
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        Adventure</p>
+      <p
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        Horror</p>
+      <p
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        Drama</p>
+      <p
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        Mystery</p>
+      <p
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        Scifi</p>
     </div>
+
+    <!--Movie box!-->
+
     <div class="w-full max-w-10xl flex-wrap flex justify-center gap-4 items-center">
       <div class="w-full md:max-w-80 mee" data-title="Maid-sama_-_06_BD_1080p_DHD"
         data-src="AnimePahe_Kaichou_wa_Maid-sama_-_06_BD_1080p_DHD.mp4">
         <img src="images/as.png" class="h-50 w-full object-fill rounded-lg">
         <div class="w-full flex justify-center items-center h-12 rounded-b-lg">Attack on Titans: Ep4 S2</div>
       </div>
-      <div class="w-full md:max-w-80 mee">
-        <img src="images/images.jpeg" class="h-50 w-full object-fill rounded-lg">
-        <div class="w-full flex justify-center h-12 items-center rounded-b-lg">Attack on Titans: Ep4 S2</div>
-      </div>
-      <div class="w-full md:max-w-80 mee">
-        <img src="images/js.jpeg" class="h-50 w-full object-fill rounded-lg">
-        <div class="w-full flex justify-center h-12 items-center rounded-b-lg">Attack on Titans: Ep4 S2</div>
-      </div>
-      <div class="w-full md:max-w-80 mee">
-        <img src="images/jko.jpeg" class="h-50 w-full object-fill rounded-lg">
-        <div class="w-full flex justify-center h-12 items-center rounded-b-lg">Attack on Titans: Ep4 S2</div>
-      </div>
-      <div class="w-full md:max-w-80 mee">
-        <img src="images/logo.png" class="h-50 w-full object-fill rounded-lg">
-        <div class="w-full flex justify-center h-12 items-center rounded-b-lg">Attack on Titans: Ep4 S2</div>
-      </div>
     </div>
+
+    <!--Movie boxes up!-->
+
+    <!--Movie player box-->
+
     <div
       class="fixed min-h-screen scale-0 inset-0 opacity-0 transition-all pointer-events-auto flex flex-col items-center bg-white dark:bg-zinc-950 w-full rounded-lg right-0 duration-600"
       id="movie-box">
-      <!--Movie player box-->
+
       <p class="py-4 md:py-6 font-sans text-lg md:text-4xl w-full my-0 md:my-4 flex justify-center text-center font-bold"
         id="title"></p>
       <video controls class="h-60 w-full lg:h-150 rounded-xl lg:w-300" src="" id="video">
@@ -89,10 +96,20 @@
           now</a>
       </div>
     </div>
+
+    <!--Movie player box up!-->
+
+    <!--Search Input-->
     <input type="search" placeholder="Search movies"
       class="w-full absolute -top-20 lg:w-1/2 bg-white text-black text-xs p-3 rounded-xl duration-1000 z-50"
       id="search">
+
+    <!--Search Input up!-->
   </div>
+
+    <!--End of Movie Section-->
+
+
   <div class="panel hidden h-screen w-10xl flex-col items-center max-w-10xl" id="Library"><!--Library-->
     <div class="w-full max-w-10xl grid grid-cols-2 py-3">
       <div>
@@ -200,7 +217,7 @@
       <p class="text-xs hidden lg:flex">Library</p>
     </div>
     <div
-      class="flex flex-col p-2 lg:px-4 text-white  bg-blue-500 dark:bg-purple-600 rounded-full justify-center items-center"
+      class="hidden flex-col p-2 lg:px-4 text-white  bg-blue-500 dark:bg-purple-600 rounded-full justify-center items-center"
       id="uploadplus">
       <i data-lucide="upload" class="w-5 h-5 lg:text-xl"></i>
       <p class="text-xs hidden lg:flex">Post</p>
@@ -228,33 +245,38 @@
         <i class="w-5 h-5" data-lucide="x" id="cancel"></i>
       </div>
       <div
-        class="h-24 w-full border border-dotted rounded-md border-black flex flex-col items-center gap-1 justify-center"
+        class="h-40 w-full border border-dotted rounded-md border-black flex flex-col items-center gap-1 justify-center"
         id="clickimage">
         <i data-lucide="camera" class="w-8 h-8 "></i>
         <p class="text-xs">Tap to Upload Image</p>
       </div>
       <input type="file" class="hidden" id="coverFile" accept="image/*">
-      <p class="text-sm my-2 text-red-600 text-center w-full">No Image detected</p>
+      <input type="file" class="hidden" id="file" accept="video/*">
       <p class="text-sm my-2">Movie Post</p>
-      <input type="text" class="border rounded-lg w-full backdrop-blur-md text-xs p-2" placeholder="Movie Title">
+      <input type="text" class="border rounded-lg w-full backdrop-blur-md text-xs p-2" placeholder="Movie Title"
+        id="movieTitle">
       <p class="text-sm my-2">Category</p>
-      <select class="border rounded-lg w-full text-xs p-2">
+      <select class="border rounded-lg w-full text-xs p-2" id="category">
         <option value="Comedy">Comedy</option>
         <option value="Romance">Romance</option>
         <option value="Anime">Anime</option>
         <option value="Action">Action</option>
+        <option value="Adventure">Adventure</option>
+        <option value="Horror">Horror</option>
+        <option value="Drama">Drama</option>
+        <option value="Mystery">Mystery</option>
+        <option value="Scifi">Scifi</option>
+        <option value="Others">Others</option>
       </select>
       <div
-        class="h-24 mt-4 w-full border border-dotted rounded-md border-black flex flex-col items-center gap-1 justify-center">
+        class="h-40 my-4 w-full border border-dotted rounded-md border-black flex flex-col items-center gap-1 justify-center"
+        id="clickVid">
         <i data-lucide="video" class="w-8 h-8 "></i>
         <p class="text-xs">Tap to Upload Video</p>
       </div>
-      <p class="text-sm my-2 text-red-600 text-center w-full">No video detected</p>
-      <div
-        class="flex bg-linear-to-r from-blue-500 to-purple-600 rounded-lg px-4 py-2 text-sm gap-2 text-white items-center justify-center">
-        <i data-lucide="arrow-up-from-line" class="w-4 h-4"></i>
-        <p>Upload</p>
-      </div>
+      <input class="bg-linear-to-r from-blue-500 to-purple-600 w-full rounded-lg px-4 py-2 text-sm gap-2 text-white"
+        type="submit" value="Upload">
+      </input>
     </form>
   </div>
   <script src="node_modules/lucide/dist/umd/lucide.js"></script>

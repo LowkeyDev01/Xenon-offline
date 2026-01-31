@@ -10,7 +10,6 @@
     --color-red-600: oklch(57.7% 0.245 27.325);
     --color-blue-500: oklch(62.3% 0.214 259.815);
     --color-blue-600: oklch(54.6% 0.245 262.881);
-    --color-purple-400: oklch(71.4% 0.203 305.504);
     --color-purple-500: oklch(62.7% 0.265 303.9);
     --color-purple-600: oklch(55.8% 0.288 302.321);
     --color-gray-50: oklch(98.5% 0.002 247.839);
@@ -21,7 +20,6 @@
     --color-black: #000;
     --color-white: #fff;
     --spacing: 0.25rem;
-    --container-sm: 24rem;
     --container-md: 28rem;
     --container-lg: 32rem;
     --container-5xl: 64rem;
@@ -262,6 +260,9 @@
   .my-2 {
     margin-block: calc(var(--spacing) * 2);
   }
+  .my-4 {
+    margin-block: calc(var(--spacing) * 4);
+  }
   .mt-2 {
     margin-top: calc(var(--spacing) * 2);
   }
@@ -307,8 +308,11 @@
   .h-20 {
     height: calc(var(--spacing) * 20);
   }
-  .h-24 {
-    height: calc(var(--spacing) * 24);
+  .h-30 {
+    height: calc(var(--spacing) * 30);
+  }
+  .h-40 {
+    height: calc(var(--spacing) * 40);
   }
   .h-50 {
     height: calc(var(--spacing) * 50);
@@ -657,16 +661,6 @@
       max-width: calc(var(--spacing) * 80);
     }
   }
-  .md\:max-w-100 {
-    @media (width >= 48rem) {
-      max-width: calc(var(--spacing) * 100);
-    }
-  }
-  .md\:max-w-180 {
-    @media (width >= 48rem) {
-      max-width: calc(var(--spacing) * 180);
-    }
-  }
   .md\:py-6 {
     @media (width >= 48rem) {
       padding-block: calc(var(--spacing) * 6);
@@ -693,9 +687,9 @@
       height: calc(var(--spacing) * 80);
     }
   }
-  .lg\:h-90 {
+  .lg\:h-120 {
     @media (width >= 64rem) {
-      height: calc(var(--spacing) * 90);
+      height: calc(var(--spacing) * 120);
     }
   }
   .lg\:h-150 {
