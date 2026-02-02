@@ -216,7 +216,7 @@ async function login(userName, password) {
         location.reload();
     }
     catch (err) {
-        console.error('Autologin failed:', err)
+        console.error('login failed:', err)
         alert(err)
     }
 }

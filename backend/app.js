@@ -38,8 +38,8 @@ const storage = new multer.diskStorage(
             const ext = path.extname(originalName);
             const name = path.basename(originalName, ext);
 
-            
-            const uniqueFilename = `${crypto.randomBytes(10)}-${Date.now()}${ext}`;
+
+            const uniqueFilename = `${crypto.randomBytes(10).toString('hex')}-${Date.now()}${ext}`;
             cb(null, uniqueFilename);
         }
     }
@@ -204,6 +204,35 @@ app.post('/logout', async (req, res) => {
     }
 })
 
+app.post('/download', async (req, res) => {
+    try {
+        const { file_path, sessionId } = req.body
+
+        const userName = await pool.query('SELECT * FROM sessions WHERE session_id = $1', [sessionId]);
+        const rusername = userName.rows[0];
+        if (!rusername) {
+            return res.status(400).json({ error: 'User not logged in' })
+        }
+        const { username } = rusername;
+
+        //Checking if downloadlog already exists
+        const result = await pool.query('SELECT * FROM download_logs WHERE username = $1 AND file_path = $2 AND is_downloaded = true', [username, file_path]);
+        if (result.rows.length > 0) {
+            return res.status(400).json({ error: 'Download already exists' });
+        }
+        const checkMovie = await pool.query('SELECT * FROM movies WHERE file_path = $1', [file_path]);
+        if (!checkMovie.rows[0]) {
+            return res.status(400).json({ error: 'Movie expired!' })
+        }
+        const { creator } = checkMovie.rows[0]
+        await pool.query('INSERT INTO download_logs (username, file_path, creator) VALUES ($1, $2, $3)', [username, file_path, creator]);
+        await pool.query('UPDATE download_logs SET is_downloaded = true WHERE username = $1 AND file_path = $2', [username, file_path]);
+        res.json({ success: true })
+    }
+    catch (err) {
+        console.error(err)
+    }
+})
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on ${PORT}`)
 })
