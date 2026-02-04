@@ -6,9 +6,12 @@ import crypto from 'crypto';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs'
-const PORT = 8080
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const PORT = 8080;
 
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 app.use(cors({
@@ -134,21 +137,23 @@ app.post('/login', async (req, res) => {
     //creating automatic session
     const sessionId = crypto.randomBytes(10).toString('hex').toLowerCase();
     await pool.query('INSERT INTO sessions (session_id, username) VALUES ($1, $2)', [sessionId, userName])
-    const { username, role, expiry_date } = user
-    res.status(200).json({ username, role, expiry_date, sessionId })
+    res.status(200).json({ sessionId })
 })
 
 //Change password
 app.post('/changepassword', async (req, res) => {
 
-    const { username, newpass, oldpass } = req.body;
-    if (!username || !newpass || !oldpass) {
+    const { sessionId, newpass, oldpass } = req.body;
+    if (!sessionId || !newpass || !oldpass) {
         res.status(400).json({ error: 'Invalid credentials' })
     }
     try {
-        const result = await pool.query('SELECT * FROM xenon_user WHERE username = $1', [username])
-
-        const user = result.rows[0];
+        const result = await pool.query('SELECT * FROM sessions WHERE session_id = $1', [sessionId]);
+        const sessionuser = result.rows[0];
+        if (!sessionuser) {
+            return res.status(400).json({ error: "Invalid Credentials" })
+        }
+        const user = sessionuser.username;
         if (!user) {
             return res.status(400).json({ error: 'Wrong password' });
         }
@@ -168,8 +173,8 @@ app.post('/changepassword', async (req, res) => {
 app.post('/autologin', async (req, res) => {
     try {
         const { sessionId } = req.body;
-        const result = await pool.query('SELECT * FROM sessions WHERE session_id = $1', [sessionId]);
 
+        const result = await pool.query('SELECT * FROM sessions WHERE session_id = $1', [sessionId]);
         const sessionuser = result.rows[0];
         if (!sessionuser) {
             return res.status(400).json({ error: "Invalid Credentials" })
@@ -180,7 +185,9 @@ app.post('/autologin', async (req, res) => {
             return res.status(400).json({ error: 'User not found' })
         }
         const { username, role, expiry_date } = realuser.rows[0]
-        res.json({ username, role, expiry_date })
+        const creator = await pool.query('SELECT * FROM download_logs WHERE creator = $1', [username])
+        const creatorNum = creator.rows.length
+        res.json({ username, role, expiry_date, creatorNum })
     }
     catch (err) {
         console.error(err);
@@ -214,25 +221,120 @@ app.post('/download', async (req, res) => {
             return res.status(400).json({ error: 'User not logged in' })
         }
         const { username } = rusername;
-
-        //Checking if downloadlog already exists
-        const result = await pool.query('SELECT * FROM download_logs WHERE username = $1 AND file_path = $2 AND is_downloaded = true', [username, file_path]);
-        if (result.rows.length > 0) {
-            return res.status(400).json({ error: 'Download already exists' });
-        }
+        //Checking if movie exists
         const checkMovie = await pool.query('SELECT * FROM movies WHERE file_path = $1', [file_path]);
+
         if (!checkMovie.rows[0]) {
-            return res.status(400).json({ error: 'Movie expired!' })
+            return res.status(400).json({ error: 'Movie does not exists!' })
         }
         const { creator } = checkMovie.rows[0]
-        await pool.query('INSERT INTO download_logs (username, file_path, creator) VALUES ($1, $2, $3)', [username, file_path, creator]);
-        await pool.query('UPDATE download_logs SET is_downloaded = true WHERE username = $1 AND file_path = $2', [username, file_path]);
+        //Checking if downloadlog already exists
+        const result = await pool.query('SELECT * FROM download_logs WHERE username = $1 AND file_path = $2', [username, file_path]);
+
+        if (result.rows.length > 0) {
+            return res.json({ message: 'Already logged' });
+        }
+        await pool.query('INSERT INTO download_logs (username, file_path, creator, is_downloaded) VALUES ($1, $2, $3, $4)', [username, file_path, creator, true]);
         res.json({ success: true })
     }
     catch (err) {
         console.error(err)
     }
 })
+app.get('/movies', async (req, res) => {
+    try {
+        const movies = await pool.query('SELECT * FROM movies LIMIT 50 OFFSET 0');
+        if (movies.rows.length === 0) {
+            return res.status(400).json({ error: 'No movies found' })
+        }
+        const results = movies.rows.map(movie => ({
+            file_id: movie.file_id,
+            movie_name: movie.movie_name,
+            file_path: movie.file_path,
+            cover_img: movie.cover_img,
+            expiry_date: movie.expiry_date
+        }))
+
+        res.json(results)
+    }
+    catch (err) {
+        console.error(err)
+    }
+})
+app.get('/movies/:filter', async (req, res) => {
+
+    const { filter } = req.params
+    let query;
+    let params = []
+    try {
+        if (filter === 'All') {
+            query = 'SELECT * FROM movies LIMIT 50 OFFSET 0';
+        }
+        else {
+            query = 'SELECT * FROM movies WHERE category = $1';
+            params = [filter];
+        }
+        const movies = await pool.query(query, params)
+        if (movies.rows.length === 0) {
+            return res.status(400).json({ error: 'No movies found' })
+        }
+        const results = movies.rows.map(movie => ({
+            file_id: movie.file_id,
+            movie_name: movie.movie_name,
+            file_path: movie.file_path,
+            cover_img: movie.cover_img,
+            expiry_date: movie.expiry_date
+        }))
+
+        res.json(results)
+    }
+    catch (err) {
+        console.error(err)
+    }
+})
+
+async function deleteExpiredMovies() {
+    try {
+        const res = await pool.query('SELECT file_path,cover_img FROM movies WHERE expiry_date < NOW()')
+        if (res.rows.length === 0) return;
+        for (let row of res.rows) {
+            const files = [row.file_path, row.cover_img]
+
+            for (let file of files) {
+                if (!file) continue;
+                const filePath = path.join(__dirname, file);
+                try {
+                    fs.unlinkSync(filePath)
+                    console.log(`${filePath} Deleted`)
+                }
+                catch (err) {
+                    console.error(err)
+                }
+            }
+        }
+        await pool.query('DELETE FROM movies WHERE expiry_date < NOW()')
+        console.log('Deleted from Database');
+    }
+
+    catch (err) {
+        console.error(err)
+    }
+}
+app.get('/search', async (req, res) => {
+    const { q } = req.query;
+
+    if (!q) {
+        return res.json([]);
+    }
+
+    const searchItem = `%${q}%`;
+
+    const result = await pool.query('SELECT * FROM movies WHERE movie_name ILIKE $1 OR category ILIKE $1', [searchItem]);
+    res.json(result.rows)
+})
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on ${PORT}`)
+    console.log(`Server running on ${PORT}`);
+
+    deleteExpiredMovies();
+    setInterval(deleteExpiredMovies, 1000 * 60 * 60);
 })

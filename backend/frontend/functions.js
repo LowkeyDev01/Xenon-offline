@@ -1,16 +1,6 @@
-const fetchUrl = 'http://localhost:8080'
-const sessionId = localStorage.getItem('sessionId');
-const logoutBtn = document.getElementById('logout'); // Add this line
-
-
 function displayMovie() {
-    document.querySelectorAll('.mee').forEach(movie => {
+    movies.forEach(movie => {
         movie.addEventListener('click', () => {
-
-            if (!sessionId) {
-                alert('Log in!')
-                return;
-            }
             //Replacing title
             const movieTitle = movie.dataset.title;
             const movieSrc = movie.dataset.src;
@@ -37,7 +27,7 @@ function displayProfile(username, account_type) {
     user.textContent = username;
     roles.textContent = account_type.toLowerCase();
 }
-function displayStats(downloads) {
+function displayStats(downloads){
     document.getElementById('downloads').textContent = downloads;
     document.getElementById('earnings').innerHTML = `&#x20A6;${downloads * 25}`
 }
@@ -84,6 +74,7 @@ async function autologin() {
         const expireMs = expiryDate - now;
         const expireDays = Math.floor(expireMs / (1000 * 60 * 60 * 24));
 
+        displayMovie();
         displayProfile(response.username, response.role);
         displayExpiryDate(expireDays)
         checkrole(response.role)
@@ -203,99 +194,15 @@ async function uploadFile(formdata) {
         alert('Upload failed!');
     }
 }
-
-async function renderMovies(res) {
-    document.querySelector('.hja').textContent = ''
-    
-    for (let re of res) {
-        const container = document.createElement('div')
-        container.className = 'w-full relative md:max-w-90 lg:max-w-100 mee'
-        container.dataset.title = re.movie_name;
-        container.dataset.src = re.file_path;
-
-        const img = document.createElement('img');
-        img.src = re.cover_img;
-        img.className = 'h-50 w-full object-fill rounded-lg';
-
-        const titleBox = document.createElement('div');
-        titleBox.className = 'w-full flex justify-center items-center h-12 rounded-b-lg';
-        titleBox.textContent = re.movie_name;
-
-        //Calculating time
-        const now = new Date();
-        const expiryDate = new Date(re.expiry_date);;
-        const expireMs = expiryDate - now;
-        const expireDays = Math.floor(expireMs / (1000 * 60 * 60 * 24));
-
-        const timer = document.createElement('div');
-        timer.className = 'absolute top-0 font-bold right-0 w-8 h-8 flex justify-center items-center bg-gray-100 rounded-tr-lg text-red-600'
-        timer.textContent = expireDays;
-
-        //appending
-        container.appendChild(img);
-        container.appendChild(titleBox);
-        container.appendChild(timer);
-        document.querySelector('.hja').appendChild(container)
-    }
-    displayMovie();
-}
-//Fetching all the movies
-async function fetchMovies() {
-    try {
+ //Fetching all the movies
+ async function fetchMovies() {
+    try{
         const fetches = await fetch(`${fetchUrl}/movies`);
         const res = await fetches.json();
-        console.log(res)
 
-        renderMovies(res)
+        console.log(res)
     }
-    catch (err) {
+    catch(err){
         console.error(err)
     }
-}
-
-//Download Function
-async function download(file_path, sessionId) {
-    try {
-        const fetches = await fetch(`${fetchUrl}/download`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ file_path, sessionId })
-        })
-        const response = await fetches.json();
-        if (!fetches.ok) {
-            alert(response.error)
-            return;
-        }
-
-        console.log(response)
-    } catch (err) {
-        console.error('Download Error', err);
-    }
-}
-//TRYALL
-
-async function fetchMovieTags(tag) {
-    try {
-        const fetches = await fetch(`${fetchUrl}/movies/${tag}`);
-        const res = await fetches.json();
-        console.log(res)
-        
-        renderMovies(res)
-    }
-    catch (err) {
-        console.error(err)
-    }
-}
-
-async function search(query) {
-    try {
-        const fetches = await fetch(`${fetchUrl}/search?q=${encodeURIComponent(query)}`);
-        const res = await fetches.json();
-        console.log(res)
-
-        renderMovies(res)
-    }
-    catch (err) {
-        console.error(err)
-    }
-}
+ }

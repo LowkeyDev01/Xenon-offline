@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="max-w-10xl w-full relative shadow-xl rounded-xl">
-      <img src="./images/banners.png" class="h-50 w-full object-cover rounded-xl lg:h-120"
+      <img src="./images/as.png" class="h-50 w-full object-cover rounded-xl md:h-80 lg:h-100"
         id="image"><!--Image Preview stuf-->
       <div
         class="absolute w-8 h-8 bg-gray-100 rounded-full top-2/5 opacity-20 left-0 flex justify-center items-center hover:opacity-50 lg:w-12 lg:h-12"
@@ -43,39 +43,44 @@
         class="tab py-1 px-4 bg-black text-white border rounded-3xl text-xs dark:bg-white cursor-pointer dark:text-black lg:text-base">
         All</p>
       <p
-        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
         Comedy</p>
       <p
-        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
         Romance</p>
       <p
-        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
         Anime</p>
       <p
-        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
         Adventure</p>
       <p
-        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
         Horror</p>
       <p
-        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
         Drama</p>
       <p
-        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
         Mystery</p>
       <p
-        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-base">
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
         Scifi</p>
     </div>
 
     <!--Movie box!-->
 
-    <div class="w-full max-w-10xl flex-wrap flex justify-center gap-4 items-center">
-      <div class="w-full md:max-w-80 mee" data-title="Maid-sama_-_06_BD_1080p_DHD"
+    <div class="w-full max-w-10xl hja flex-wrap flex justify-center gap-4 items-center">
+
+    <!--
+      <div class="w-full relative md:max-w-90 lg:max-w-100 mee" data-title="Maid-sama_-_06_BD_1080p_DHD"
         data-src="AnimePahe_Kaichou_wa_Maid-sama_-_06_BD_1080p_DHD.mp4">
         <img src="images/as.png" class="h-50 w-full object-fill rounded-lg">
         <div class="w-full flex justify-center items-center h-12 rounded-b-lg">Attack on Titans: Ep4 S2</div>
+        <div class="absolute top-0 font-bold right-0 w-8 h-8 flex justify-center items-center bg-gray-100 rounded-tr-lg text-red-600">3d</div>
       </div>
+    -->
+  
     </div>
 
     <!--Movie boxes up!-->
@@ -86,7 +91,7 @@
       class="fixed min-h-screen scale-0 inset-0 opacity-0 transition-all pointer-events-auto flex flex-col items-center bg-white dark:bg-zinc-950 w-full rounded-lg right-0 duration-600"
       id="movie-box">
 
-      <p class="py-4 md:py-6 font-sans text-lg md:text-4xl w-full my-0 md:my-4 flex justify-center text-center font-bold"
+      <p class="py-4 font-sans text-lg md:text-xl md:py-0 w-full my-0 md:my-4 flex justify-center text-center"
         id="title"></p>
       <video controls class="h-60 w-full lg:h-150 rounded-xl lg:w-300" src="" id="video">
       </video>
@@ -107,7 +112,7 @@
     <!--Search Input up!-->
   </div>
 
-    <!--End of Movie Section-->
+  <!--End of Movie Section-->
 
 
   <div class="panel hidden h-screen w-10xl flex-col items-center max-w-10xl" id="Library"><!--Library-->
@@ -150,12 +155,12 @@
     <p class="w-full py-2 hidden text-sm max-w-5xl statname">Stats</p>
     <div class="max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-4 hidden grid-cols-3 rounded-2xl stats">
       <div class="flex flex-col justify-center items-center">
-        <p class="text-lg font-bold">&#x20A6;20K+</p>
+        <p class="text-lg font-bold" id="earnings">&#x20A6;</p>
         <p class="text-xs">Earnings</p>
       </div>
       <div class="flex flex-col justify-center items-center">
-        <p class="text-lg">1K+</p>
-        <p class="text-xs">Downloads</p>
+        <p class="text-lg" id="downloads">1K+</p>
+        <p class="text-xs">No. of Downloads</p>
       </div>
       <div class="flex flex-col justify-center items-center">
         <p class="text-lg font-bold">7d</p>
@@ -169,9 +174,10 @@
       <i data-lucide="chevron-right" class=""></i>
     </div>
     <div
-      class="h-screen absolute flex flex-col justify-center items-center text-center top-0 w-full bg-zinc-950 duration-700"
+      class="h-screen absolute flex flex-col justify-center items-center text-center top-0 w-full bg-white dark:bg-zinc-950 duration-700"
       id="login-screen">
-      <form class="w-full lg:max-w-lg flex flex-col justify-center items-center lg:h-80 p-4 bg-zinc-900 rounded-lg"
+      <form
+        class="w-full lg:max-w-lg flex flex-col justify-center items-center lg:h-80 p-4 bg-gray-100 dark:bg-zinc-900 rounded-lg"
         id="login"><!--Login From-->
         <p class="text-lg font-bold">Log in to Account</p>
         <p class="w-full text-left text-sm mb-1">Username</p>
@@ -185,7 +191,8 @@
         <p class="text-blue-600 underline mt-5 text-sm" id="show-sign">No account yet? Register!</p>
       </form>
 
-      <form class="w-full lg:max-w-lg hidden flex-col justify-center items-center lg:h-80 p-4 bg-zinc-900 rounded-lg"
+      <form
+        class="w-full lg:max-w-lg hidden flex-col justify-center items-center lg:h-80 p-4 bg-gray-100 dark:bg-zinc-900 rounded-lg"
         id="sign-up"><!--Sign up From-->
         <p class="text-lg font-bold">Create Account</p>
         <p class="w-full text-left text-sm mb-1">Username</p>
@@ -232,9 +239,12 @@
     </div>
   </div>
   <!--End of Nav-->
+
+  <!--Upload box-->
+
   <div
     class="h-screen scale-0 opacity-0 flex px-4 justify-center text-black items-center bg-black/50 w-full fixed inset-0 backdrop-blur-xs top-0 duration-600"
-    id="uploadbox"> <!--Upload box-->
+    id="uploadbox">
 
     <form class="max-w-md w-full bg-white rounded-xl p-4" id="Uploadform">
       <div class="w-full flex justify-between">
@@ -271,7 +281,7 @@
       <div
         class="h-40 my-4 w-full border border-dotted rounded-md border-black flex flex-col items-center gap-1 justify-center"
         id="clickVid">
-        <i data-lucide="video" class="w-8 h-8 "></i>
+        <i data-lucide="video" class="w-8 h-8"></i>
         <p class="text-xs">Tap to Upload Video</p>
       </div>
       <input class="bg-linear-to-r from-blue-500 to-purple-600 w-full rounded-lg px-4 py-2 text-sm gap-2 text-white"
@@ -283,6 +293,6 @@
   <script>
     lucide.createIcons(); // replaces <i> tags automatically
   </script>
-  <script src="./script.js"></script>
   <script src="./fetch.js"></script>
+  <script src="./script.js"></script>
 </body>
