@@ -201,7 +201,6 @@ closeBtn.addEventListener('click', () => {
 
 autologin();
 
-
 loginForm.addEventListener('submit', (e) => {
     const username = document.getElementById('username').value
     const pass = document.getElementById('password').value
@@ -209,6 +208,17 @@ loginForm.addEventListener('submit', (e) => {
     login(username, pass)
 })
 
+const popUp = document.getElementById('logoutPopup');
+const closePOP = document.getElementById('closeLogout');
+
+document.getElementById('logoutPops').addEventListener('click', ()=>{
+    popUp.classList.remove('scale-0', 'opacity-0')
+    popUp.classList.add('scale-100', 'opacity-100')
+})
+closePOP.addEventListener('click', ()=>{
+    popUp.classList.remove('scale-100', 'opacity-100')
+    popUp.classList.add('scale-0', 'opacity-0')
+})
 
 logoutBtn.addEventListener('click', () => {
     Logout(sessionId);

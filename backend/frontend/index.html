@@ -72,7 +72,7 @@
 
     <div class="w-full max-w-10xl hja flex-wrap flex justify-center gap-4 items-center">
 
-    <!--
+      <!--
       <div class="w-full relative md:max-w-90 lg:max-w-100 mee" data-title="Maid-sama_-_06_BD_1080p_DHD"
         data-src="AnimePahe_Kaichou_wa_Maid-sama_-_06_BD_1080p_DHD.mp4">
         <img src="images/as.png" class="h-50 w-full object-fill rounded-lg">
@@ -80,7 +80,7 @@
         <div class="absolute top-0 font-bold right-0 w-8 h-8 flex justify-center items-center bg-gray-100 rounded-tr-lg text-red-600">3d</div>
       </div>
     -->
-  
+
     </div>
 
     <!--Movie boxes up!-->
@@ -136,7 +136,7 @@
           Profile</p>
       </div>
       <div class="flex justify-end w-full items-center">
-        <p class="text-sm text-red-600" id="logout">Log out</p>
+        <p class="text-sm text-red-600 cursor-pointer" id="logoutPops">Log out</p>
       </div>
     </div>
     <div class="max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 p-2.5 flex rounded-2xl">
@@ -173,6 +173,23 @@
       <p class="">Change Password</p>
       <i data-lucide="chevron-right" class=""></i>
     </div>
+    <!--Logout note-->
+    <div
+      class="h-screen w-full max-w-full flex inset-0 justify-center scale-0 duration-600 transition-all opacity-0 items-center fixed top-0 bg-black/10 backdrop-blur-sm"
+      id="logoutPopup">
+      <div class="max-w-sm w-full bg-gray-50 dark:bg-zinc-900 rounded-b-2xl">
+        <p class="w-full text-center py-2 text-sm border-b border-white/50">Notice</p>
+        <div class="w-full py-6 flex justify-center text-sm items-center">Are you sure you want to Logout?</div>
+        <div class="w-full grid grid-cols-2">
+          <div class="flex justify-center items-center py-2 hover:border border-white/50 text-sm rounded-bl-2xl"
+            id="closeLogout">Cancel</div>
+          <div class="bg-red-600 flex justify-center items-center py-2 border border-red-600 text-sm rounded-br-2xl"
+            id="logout">Logout</div>
+        </div>
+      </div>
+    </div>
+
+    <!--Login/SignUp screen-->
     <div
       class="h-screen absolute flex flex-col justify-center items-center text-center top-0 w-full bg-white dark:bg-zinc-950 duration-700"
       id="login-screen">
@@ -208,7 +225,8 @@
           value="Create Account">
         <p class="text-blue-600 underline mt-5 text-sm" id="show-log">Log in into account</p>
       </form>
-    </div>
+  </div>
+  <!--End of Login screen-->
 
   </div>
 
