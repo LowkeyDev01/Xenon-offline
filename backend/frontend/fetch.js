@@ -206,7 +206,7 @@ async function uploadFile(formdata) {
 
 async function renderMovies(res) {
     document.querySelector('.hja').textContent = ''
-    
+
     for (let re of res) {
         const container = document.createElement('div')
         container.className = 'w-full relative md:max-w-90 lg:max-w-100 mee'
@@ -279,7 +279,7 @@ async function fetchMovieTags(tag) {
         const fetches = await fetch(`${fetchUrl}/movies/${tag}`);
         const res = await fetches.json();
         console.log(res)
-        
+
         renderMovies(res)
     }
     catch (err) {
@@ -297,5 +297,33 @@ async function search(query) {
     }
     catch (err) {
         console.error(err)
+    }
+}
+
+async function changePassword(sessionId, oldpass, newpass) {
+    if (!sessionId || !oldpass || !newpass) {
+        console.log('missing field')
+        return;
+    }
+    try {
+        const fetches = await fetch(`${fetchUrl}/changepassword`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId, oldpass, newpass })
+        })
+        const response = await fetches.json();
+        if (!fetches.ok) {
+            alert(response.error)
+            return;
+        }
+        if (response.success === true) {
+            alert('Password Changed successfully!');
+            changePasswordScreen.classList.remove('scale-100', 'opacity-100')
+            changePasswordScreen.classList.add('scale-0', 'opacity-0')
+            clearr()
+        }
+    } catch (err) {
+        console.error('Signup failed:', err);
+        alert('Signup failed - Please try again');
     }
 }

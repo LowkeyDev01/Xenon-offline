@@ -84,7 +84,7 @@ searchBar.addEventListener('input', (e) => {
     if (value.length > 0) {
         search(value)
     }
-    if(value.length === 0){
+    if (value.length === 0) {
         fetchMovies()
     }
 })
@@ -211,11 +211,11 @@ loginForm.addEventListener('submit', (e) => {
 const popUp = document.getElementById('logoutPopup');
 const closePOP = document.getElementById('closeLogout');
 
-document.getElementById('logoutPops').addEventListener('click', ()=>{
+document.getElementById('logoutPops').addEventListener('click', () => {
     popUp.classList.remove('scale-0', 'opacity-0')
     popUp.classList.add('scale-100', 'opacity-100')
 })
-closePOP.addEventListener('click', ()=>{
+closePOP.addEventListener('click', () => {
     popUp.classList.remove('scale-100', 'opacity-100')
     popUp.classList.add('scale-0', 'opacity-0')
 })
@@ -242,4 +242,39 @@ document.getElementById('down').addEventListener('click', (e) => {
     console.log(cleanPath)
     download(cleanPath, sessionId)
 })
+
+const changePassForm = document.getElementById('ChangePassword');
+const changePasswordScreen = document.getElementById('screen')
+const closeChange = document.getElementById('ffar')
+//Making the pop Show
+document.getElementById('meuver').addEventListener('click', () => {
+    changePasswordScreen.classList.remove('scale-0', 'opacity-0')
+    changePasswordScreen.classList.add('scale-100', 'opacity-100')
+})
+closeChange.addEventListener('click', () => {
+    changePasswordScreen.classList.remove('scale-100', 'opacity-100')
+    changePasswordScreen.classList.add('scale-0', 'opacity-0')
+    clearr()
+})
+changePassForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const oldpass = document.getElementById('oldpass').value;
+
+    const newpass0 = document.getElementById('newpass0').value
+    const newpass1 = document.getElementById('newpass1').value
+
+    if (newpass0 !== newpass1) {
+        alert('Baba the passwords no match');
+        return;
+    }
+
+    changePassword(sessionId, oldpass, newpass1)
+})
+function clearr() {
+    document.getElementById('oldpass').value = ''
+
+    document.getElementById('newpass0').value = ''
+    document.getElementById('newpass1').value = ''
+
+}
 fetchMovies();

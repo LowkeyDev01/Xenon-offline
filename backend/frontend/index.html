@@ -169,9 +169,10 @@
     </div>
     <p class="w-full max-w-5xl py-3 text-sm">Settings</p>
     <div
-      class="flex max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-3 text-sm px-4 rounded-lg justify-between items-center">
+      class="flex max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-3 text-sm px-4 rounded-lg justify-between items-center"
+      id="meuver">
       <p class="">Change Password</p>
-      <i data-lucide="chevron-right" class=""></i>
+      <i data-lucide="chevron-right"></i>
     </div>
     <!--Logout note-->
     <div
@@ -183,11 +184,48 @@
         <div class="w-full grid grid-cols-2">
           <div class="flex justify-center items-center py-2 hover:border border-white/50 text-sm rounded-bl-2xl"
             id="closeLogout">Cancel</div>
-          <div class="bg-red-600 flex justify-center items-center py-2 border border-red-600 text-sm rounded-br-2xl"
+          <div
+            class="bg-red-600 text-white flex justify-center items-center py-2 border border-red-600 text-sm rounded-br-2xl"
             id="logout">Logout</div>
         </div>
       </div>
     </div>
+
+    <!--Change Password popUp-->
+    <div
+      class="h-screen w-full max-w-full px-2 flex inset-0 justify-center scale-0 duration-600 transition-all opacity-0 items-center fixed top-0 bg-black/10 backdrop-blur-sm"
+      id="screen">
+      <form
+        class="w-full max-w-md flex flex-col justify-center items-center p-4 bg-gray-100 dark:bg-zinc-900 rounded-lg"
+        id="ChangePassword">
+        <div class="grid w-full grid-cols-2 border-b border-white/50 mb-4 p-1">
+          <div class="flex justify-start">
+            <p class="text-sm md:text-sm">Change Password</p>
+          </div>
+          <div class="flex justify-end items-center">
+            <i class="w-5 h-5 text-red-600" data-lucide="x" id="ffar"></i>
+          </div>
+        </div>
+
+
+        <p class="w-full text-left text-xs my-1">Old Password</p>
+
+        <input type="password" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="Old Password"
+          id="oldpass">
+
+        <p class="w-full text-left text-xs my-1">New Password</p>
+        <input type="password" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="New Password"
+          id="newpass0">
+
+        <p class="w-full text-left text-xs my-1">Confirm Password</p>
+        <input type="password" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="New Password"
+          id="newpass1">
+        <input type="submit"
+          class="bg-linear-to-r from-blue-500 to-purple-600 rounded-md mt-4 px-6 py-1 text-white text-sm"
+          value="Confirm">
+      </form>
+    </div>
+
 
     <!--Login/SignUp screen-->
     <div
@@ -225,8 +263,8 @@
           value="Create Account">
         <p class="text-blue-600 underline mt-5 text-sm" id="show-log">Log in into account</p>
       </form>
-  </div>
-  <!--End of Login screen-->
+    </div>
+    <!--End of Login screen-->
 
   </div>
 

@@ -8,6 +8,7 @@ import path from 'path';
 import fs from 'fs'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { error } from 'console';
 const PORT = 8080;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -143,7 +144,7 @@ app.post('/login', async (req, res) => {
 //Change password
 app.post('/changepassword', async (req, res) => {
 
-    const { sessionId, newpass, oldpass } = req.body;
+    const { sessionId, oldpass, newpass } = req.body;
     if (!sessionId || !newpass || !oldpass) {
         res.status(400).json({ error: 'Invalid credentials' })
     }
@@ -151,19 +152,22 @@ app.post('/changepassword', async (req, res) => {
         const result = await pool.query('SELECT * FROM sessions WHERE session_id = $1', [sessionId]);
         const sessionuser = result.rows[0];
         if (!sessionuser) {
-            return res.status(400).json({ error: "Invalid Credentials" })
+            return res.status(400).json({ error: "User not LoggedIn" })
         }
         const user = sessionuser.username;
-        if (!user) {
-            return res.status(400).json({ error: 'Wrong password' });
-        }
-        const match = await bcrypt.compare(oldpass, user.password);
+
+        const fetchPass = await pool.query('SELECT * FROM xenon_user WHERE username = $1', [user])
+        const { password } = fetchPass.rows[0]
+        const match = await bcrypt.compare(oldpass, password);
         if (!match) {
             return res.status(401).json({ error: "Old password is wrong" })
         }
+        if(oldpass === newpass){
+            return res.status(400).json({error: 'Password is the same tf?!'})
+        }
         const hash = await bcrypt.hash(newpass, 10)
-        await pool.query('UPDATE xenon_user SET password = $1 WHERE username = $2', [hash, username]);
-        res.json('Change successful!')
+        await pool.query('UPDATE xenon_user SET password = $1 WHERE username = $2', [hash, user]);
+        res.json({success: true})
     }
     catch (err) {
         console.error(err.message);
