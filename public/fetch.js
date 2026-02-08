@@ -245,7 +245,11 @@ async function fetchMovies() {
         const fetches = await fetch(`${fetchUrl}/movies`);
         const res = await fetches.json();
         console.log(res)
-
+        if(!fetches.ok){
+            console.log(res.error)
+            document.querySelector('.hja').innerHTML = `<p class="pt-5">${res.error}</p>`;
+            return;
+        }
         renderMovies(res)
     }
     catch (err) {
@@ -278,8 +282,13 @@ async function fetchMovieTags(tag) {
     try {
         const fetches = await fetch(`${fetchUrl}/movies/${tag}`);
         const res = await fetches.json();
-        console.log(res)
 
+        if(!fetches.ok){
+            console.log(res.error)
+            return;
+        }
+
+        console.log(res)
         renderMovies(res)
     }
     catch (err) {

@@ -3,16 +3,11 @@ import cors from 'cors';
 import bcrypt from 'bcrypt';
 import pool from './db.js';
 import crypto from 'crypto';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs'
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import { error } from 'console';
+import Queue from 'bull'
+
+
 const PORT = 8080;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 const app = express();
 app.use(cors({
@@ -28,29 +23,19 @@ app.use(express.json());
 //Multer storage
 //------------
 
-const storage = new multer.diskStorage(
-    {
-        destination: (req, file, cb) => {
-            const folder = 'uploads';
-            if (!fs.existsSync(folder)) {
-                fs.mkdirSync(folder);
-            }
-            cb(null, folder)
-        },
-        filename: (req, file, cb) => {
-            let originalName = file.originalname;
-            const ext = path.extname(originalName);
-            const name = path.basename(originalName, ext);
 
 
-            const uniqueFilename = `${crypto.randomBytes(10).toString('hex')}-${Date.now()}${ext}`;
-            cb(null, uniqueFilename);
-        }
+
+downloadQueue.process(1, async (job) => {
+    const { username, file_path, creator } = job.data;
+
+    const result = await pool.query('SELECT * FROM download_logs WHERE username = $1 AND file_path = $2', [username, file_path]);
+    if (result.rows.length > 0) {
+        return { success: true };
     }
 
-);
-
-const upload = multer({ storage });
+    await pool.query('INSERT INTO download_logs (username, file_path, creator, is_downloaded) VALUES ($1, $2, $3, $4)', [username, file_path, creator, true]);
+})
 
 app.post('/upload', upload.fields([
     { name: 'file', maxCount: 1 },
@@ -162,12 +147,12 @@ app.post('/changepassword', async (req, res) => {
         if (!match) {
             return res.status(401).json({ error: "Old password is wrong" })
         }
-        if(oldpass === newpass){
-            return res.status(400).json({error: 'Password is the same tf?!'})
+        if (oldpass === newpass) {
+            return res.status(400).json({ error: 'Password is the same tf?!' })
         }
         const hash = await bcrypt.hash(newpass, 10)
         await pool.query('UPDATE xenon_user SET password = $1 WHERE username = $2', [hash, user]);
-        res.json({success: true})
+        res.json({ success: true })
     }
     catch (err) {
         console.error(err.message);
@@ -226,6 +211,7 @@ app.post('/download', async (req, res) => {
         }
         const { username } = rusername;
         //Checking if movie exists
+
         const checkMovie = await pool.query('SELECT * FROM movies WHERE file_path = $1', [file_path]);
 
         if (!checkMovie.rows[0]) {
@@ -233,12 +219,7 @@ app.post('/download', async (req, res) => {
         }
         const { creator } = checkMovie.rows[0]
         //Checking if downloadlog already exists
-        const result = await pool.query('SELECT * FROM download_logs WHERE username = $1 AND file_path = $2', [username, file_path]);
-
-        if (result.rows.length > 0) {
-            return res.json({ message: 'Already logged' });
-        }
-        await pool.query('INSERT INTO download_logs (username, file_path, creator, is_downloaded) VALUES ($1, $2, $3, $4)', [username, file_path, creator, true]);
+        await downloadQueue.add({ username, file_path, creator })
         res.json({ success: true })
     }
     catch (err) {
@@ -246,6 +227,13 @@ app.post('/download', async (req, res) => {
     }
 })
 app.get('/movies', async (req, res) => {
+    const cacheKey = 'movies_list';
+    const cached = await redisClient.get(cacheKey);
+    console.log('Cached value:', cached);
+    if (cached) {
+        return res.json(JSON.parse(cached));
+    }
+
     try {
         const movies = await pool.query('SELECT * FROM movies LIMIT 50 OFFSET 0');
         if (movies.rows.length === 0) {
@@ -259,6 +247,7 @@ app.get('/movies', async (req, res) => {
             expiry_date: movie.expiry_date
         }))
 
+        await redisClient.set(cacheKey, JSON.stringify(results), { EX: 60 });
         res.json(results)
     }
     catch (err) {
@@ -297,33 +286,6 @@ app.get('/movies/:filter', async (req, res) => {
     }
 })
 
-async function deleteExpiredMovies() {
-    try {
-        const res = await pool.query('SELECT file_path,cover_img FROM movies WHERE expiry_date < NOW()')
-        if (res.rows.length === 0) return;
-        for (let row of res.rows) {
-            const files = [row.file_path, row.cover_img]
-
-            for (let file of files) {
-                if (!file) continue;
-                const filePath = path.join(__dirname, file);
-                try {
-                    fs.unlinkSync(filePath)
-                    console.log(`${filePath} Deleted`)
-                }
-                catch (err) {
-                    console.error(err)
-                }
-            }
-        }
-        await pool.query('DELETE FROM movies WHERE expiry_date < NOW()')
-        console.log('Deleted from Database');
-    }
-
-    catch (err) {
-        console.error(err)
-    }
-}
 app.get('/search', async (req, res) => {
     const { q } = req.query;
 
