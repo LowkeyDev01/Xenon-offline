@@ -72,7 +72,7 @@ export const search = async (req, res) => {
 
     const searchItem = `%${q}%`;
 
-    const result = await pool.query('SELECT * FROM movies WHERE movie_name ILIKE $1 OR category ILIKE $1', [searchItem]);
+    const result = await pool.query('SELECT * FROM movies WHERE movie_name ILIKE $1 OR category ILIKE $1 LIMIT 20', [searchItem]);
     res.json(result.rows)
 }
 //Upload

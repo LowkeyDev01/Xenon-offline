@@ -63,7 +63,7 @@ async function autologin() {
     }
 
     try {
-        const fetches = await fetch(`${fetchUrl}/autologin`, {
+        const fetches = await fetch(`${fetchUrl}/auth/autologin`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ sessionId })
@@ -102,7 +102,7 @@ async function login(userName, password) {
         return;
     }
     try {
-        const fetches = await fetch(`${fetchUrl}/login`, {
+        const fetches = await fetch(`${fetchUrl}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userName, password })
@@ -133,7 +133,7 @@ async function Logout(sessionId) {
     }
 
     try {
-        const fetches = await fetch(`${fetchUrl}/logout`, {
+        const fetches = await fetch(`${fetchUrl}/auth/logout`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ sessionId })
@@ -163,7 +163,7 @@ async function signUp(username, password, signup_code) {
         return;
     }
     try {
-        const fetches = await fetch(`${fetchUrl}/register`, {
+        const fetches = await fetch(`${fetchUrl}/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password, signup_code })
@@ -185,7 +185,7 @@ async function signUp(username, password, signup_code) {
 //Upload Function
 async function uploadFile(formdata) {
     try {
-        const fetches = await fetch(`${fetchUrl}/upload`, {
+        const fetches = await fetch(`${fetchUrl}/movies/upload`, {
             method: 'POST',
             body: formdata
         })
@@ -242,10 +242,10 @@ async function renderMovies(res) {
 //Fetching all the movies
 async function fetchMovies() {
     try {
-        const fetches = await fetch(`${fetchUrl}/movies`);
+        const fetches = await fetch(`${fetchUrl}/movies/all`);
         const res = await fetches.json();
         console.log(res)
-        if(!fetches.ok){
+        if (!fetches.ok) {
             console.log(res.error)
             document.querySelector('.hja').innerHTML = `<p class="pt-5">${res.error}</p>`;
             return;
@@ -260,7 +260,7 @@ async function fetchMovies() {
 //Download Function
 async function download(file_path, sessionId) {
     try {
-        const fetches = await fetch(`${fetchUrl}/download`, {
+        const fetches = await fetch(`${fetchUrl}/movies/download`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ file_path, sessionId })
@@ -283,8 +283,9 @@ async function fetchMovieTags(tag) {
         const fetches = await fetch(`${fetchUrl}/movies/${tag}`);
         const res = await fetches.json();
 
-        if(!fetches.ok){
+        if (!fetches.ok) {
             console.log(res.error)
+            document.querySelector('.hja').innerHTML = `<p class="pt-5">${res.error}</p>`;
             return;
         }
 
@@ -295,18 +296,25 @@ async function fetchMovieTags(tag) {
         console.error(err)
     }
 }
+let timerId;
 
 async function search(query) {
-    try {
-        const fetches = await fetch(`${fetchUrl}/search?q=${encodeURIComponent(query)}`);
-        const res = await fetches.json();
-        console.log(res)
+    if (!query) return;
 
-        renderMovies(res)
-    }
-    catch (err) {
-        console.error(err)
-    }
+    clearTimeout(timerId);
+
+    timerId = setTimeout(async () => {
+        try {
+            const fetches = await fetch(`${fetchUrl}/movies/search?q=${encodeURIComponent(query)}`);
+            const res = await fetches.json();
+
+            console.log(res)
+            renderMovies(res)
+        }
+        catch (err) {
+            console.error(err)
+        }
+    }, 400)
 }
 
 async function changePassword(sessionId, oldpass, newpass) {
@@ -315,7 +323,7 @@ async function changePassword(sessionId, oldpass, newpass) {
         return;
     }
     try {
-        const fetches = await fetch(`${fetchUrl}/changepassword`, {
+        const fetches = await fetch(`${fetchUrl}/auth/changepassword`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ sessionId, oldpass, newpass })
@@ -333,6 +341,6 @@ async function changePassword(sessionId, oldpass, newpass) {
         }
     } catch (err) {
         console.error('Signup failed:', err);
-        alert('Signup failed - Please try again');
+        alert('Server Error - try again later!');
     }
 }
