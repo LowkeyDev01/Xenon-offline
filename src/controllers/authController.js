@@ -106,3 +106,36 @@ export const logout = async (req, res) => {
         return res.status(500).json({ error: 'Logout failed' });
     }
 }
+
+//ChangePassword
+export const changePassword = async (req, res) => {
+
+    const { sessionId, oldpass, newpass } = req.body;
+    if (!sessionId || !newpass || !oldpass) {
+        res.status(400).json({ error: 'Invalid credentials' })
+    }
+    try {
+        const result = await pool.query('SELECT * FROM sessions WHERE session_id = $1', [sessionId]);
+        const sessionuser = result.rows[0];
+        if (!sessionuser) {
+            return res.status(400).json({ error: "User not LoggedIn" })
+        }
+        const user = sessionuser.username;
+
+        const fetchPass = await pool.query('SELECT * FROM xenon_user WHERE username = $1', [user])
+        const { password } = fetchPass.rows[0]
+        const match = await bcrypt.compare(oldpass, password);
+        if (!match) {
+            return res.status(401).json({ error: "Old password is wrong" })
+        }
+        if (oldpass === newpass) {
+            return res.status(400).json({ error: 'Password is the same tf?!' })
+        }
+        const hash = await bcrypt.hash(newpass, 10)
+        await pool.query('UPDATE xenon_user SET password = $1 WHERE username = $2', [hash, user]);
+        res.json({ success: true })
+    }
+    catch (err) {
+        console.error(err.message);
+    }
+}

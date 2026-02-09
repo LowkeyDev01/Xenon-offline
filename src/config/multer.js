@@ -6,7 +6,7 @@ import path from 'path';
 const storage = new multer.diskStorage(
     {
         destination: (req, file, cb) => {
-            const folder = 'uploads';
+            const folder = path.resolve(__dirname, '../../uploads');
             if (!fs.existsSync(folder)) {
                 fs.mkdirSync(folder);
             }
@@ -24,4 +24,6 @@ const storage = new multer.diskStorage(
 
 );
 
-export const upload = multer({ storage });
+const upload = multer({ storage });
+
+export default upload;
