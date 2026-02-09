@@ -1,7 +1,7 @@
 import redisClient from '../config/redis.js';
 import pool from '../config/db.js';
 import upload from '../config/multer.js';
-
+import downloadQueue from '../config/queue.js'
 
 export const movies = async (req, res) => {
     const cacheKey = 'movies_list';
@@ -75,7 +75,7 @@ export const search = async (req, res) => {
     const result = await pool.query('SELECT * FROM movies WHERE movie_name ILIKE $1 OR category ILIKE $1', [searchItem]);
     res.json(result.rows)
 }
-
+//Upload
 export const uploadHandler = [upload.fields([
     { name: 'file', maxCount: 1 },
     { name: 'cover', maxCount: 1 }
@@ -102,7 +102,7 @@ export const uploadHandler = [upload.fields([
         [title, mainFilePath, coverImgPath, category, creator.rows[0].username, now, expiry_date]);
     res.json({ success: true });
 }]
-
+//Download
 export const download = async (req, res) => {
     try {
         const { file_path, sessionId } = req.body

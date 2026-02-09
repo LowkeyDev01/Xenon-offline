@@ -2,6 +2,11 @@ import multer from 'multer';
 import crypto from 'crypto'
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const storage = new multer.diskStorage(
     {
