@@ -139,3 +139,24 @@ export const changePassword = async (req, res) => {
         console.error(err.message);
     }
 }
+export const deleteAccount = async (req, res) => {
+    const { sessionId } = req.body;
+
+    if (!sessionId) {
+        return res.status(400).json({ error: 'Not logged in' });
+    }
+    try {
+        const result = await pool.query('SELECT * FROM sessions WHERE session_id = $1', [sessionId]);
+        const sessionuser = result.rows[0];
+        if (!sessionuser) {
+            return res.status(400).json({ error: "User not LoggedIn" })
+        }
+        const user = sessionuser.username;
+
+        await pool.query('DELETE FROM xenon_user WHERE username = $1', [user]);
+        await pool.query('DELETE FROM sessions WHERE session_id = $1', [sessionId]);
+        res.json({success: true});
+    } catch (err) {
+    console.error(err.message)
+    }
+}

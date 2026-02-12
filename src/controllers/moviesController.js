@@ -91,15 +91,20 @@ export const uploadHandler = [upload.fields([
         return res.status(400).json({ error: 'Missing files' });
     }
 
-    const mainFilePath = file[0].path;
-    const coverImgPath = cover[0].path;
+    const mainFilePath = file[0].filename;
+    const coverImgPath = cover[0].filename;
+
+    const relativeFile = `uploads/${mainFilePath}`
+    const relativeImg = `uploads/${coverImgPath}`
     const creator = await pool.query('SELECT username FROM sessions WHERE session_id = $1', [sessionId]);
     const now = new Date();
     const expiry_date = new Date();
     expiry_date.setDate(now.getDate() + 5);
 
     await pool.query('INSERT INTO movies (movie_name, file_path, cover_img, category, creator, uploaded_at, expiry_date) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-        [title, mainFilePath, coverImgPath, category, creator.rows[0].username, now, expiry_date]);
+        [title, relativeFile, relativeImg, category, creator.rows[0].username, now, expiry_date]);
+
+    await redisClient.del('movies_list')
     res.json({ success: true });
 }]
 //Download
@@ -122,8 +127,9 @@ export const download = async (req, res) => {
         }
         const { creator } = checkMovie.rows[0]
         //Checking if downloadlog already exists
-        await downloadQueue.add({ username, file_path, creator })
-        res.json({ success: true })
+        const hey = await downloadQueue.add({ username, file_path, creator })
+
+        res.json({ success: 'recorded' })
     }
     catch (err) {
         console.error(err)

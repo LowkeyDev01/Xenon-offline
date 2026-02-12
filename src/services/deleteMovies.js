@@ -3,7 +3,7 @@ import { dirname } from 'path'
 import path from 'path';
 import fs from 'fs';
 import pool from '../config/db.js';
-
+import redisClient from '../config/redis.js'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -16,7 +16,7 @@ const deleteExpiredMovies = async () => {
 
             for (let file of files) {
                 if (!file) continue;
-                const filePath = path.join(__dirname, file);
+                const filePath = path.join(process.cwd(), file);
                 try {
                     fs.unlinkSync(filePath)
                     console.log(`${filePath} Deleted`)
@@ -27,6 +27,7 @@ const deleteExpiredMovies = async () => {
             }
         }
         await pool.query('DELETE FROM movies WHERE expiry_date < NOW()')
+        await redisClient.del('movies_list');
         console.log('Deleted from Database');
     }
 

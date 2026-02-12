@@ -3,7 +3,7 @@ const sessionId = localStorage.getItem('sessionId');
 const logoutBtn = document.getElementById('logout'); // Add this line
 
 
-function displayMovie() {
+function displayMovie(res) {
     document.querySelectorAll('.mee').forEach(movie => {
         movie.addEventListener('click', () => {
 
@@ -72,9 +72,8 @@ async function autologin() {
         const response = await fetches.json();
 
         if (!fetches.ok) {
-            alert('Session expired or invalid - Please login again')
-            localStorage.removeItem('sessionId');
-            return;
+            alert(response.error)
+            return false;
         }
         console.log('Login successful:', response)
 
@@ -88,6 +87,7 @@ async function autologin() {
         displayExpiryDate(expireDays)
         checkrole(response.role)
         displayStats(response.creatorNum)
+        displayMovie();
     }
     catch (err) {
         console.error('Autologin failed:', err)
@@ -237,7 +237,7 @@ async function renderMovies(res) {
         container.appendChild(timer);
         document.querySelector('.hja').appendChild(container)
     }
-    displayMovie();
+    
 }
 //Fetching all the movies
 async function fetchMovies() {

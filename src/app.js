@@ -20,10 +20,11 @@ app.use(cors({
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.resolve(__dirname, '../public')))
-app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')))
+app.use('/uploads', express.static('uploads'));
 app.use(express.json());
 
-app.use('/', masterRoute)
+app.use('/', masterRoute);
+
 
 
 app.listen(PORT, '0.0.0.0', () => {
