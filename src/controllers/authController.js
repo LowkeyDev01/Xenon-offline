@@ -42,26 +42,36 @@ export const login = async (req, res) => {
     const { userName, password } = req.body;
     const result = await pool.query('SELECT * FROM xenon_user WHERE username = $1 AND expiry_date > NOW()', [userName]);
 
-    const user = result.rows[0];
-    if (!user) {
-        return res.status(400).json({ error: "Invalid Credentials" })
+    try {
+        const user = result.rows[0];
+        if (!user) {
+            return res.status(400).json({ error: "Invalid Credentials" })
+        }
+
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            return res.status(401).json({ error: "Invalid Credentials" })
+        }
+
+        const now = new Date();
+        if (user.expiry_date < now) {
+            return res.status(401).json({ status: 'Account Expired' })
+        }
+
+        const checkses = await pool.query('SELECT * FROM sessions WHERE username = $1', [userName])
+        if (checkses.rows.length > 0) {
+            return res.status(400).json({ error: 'Another device is logged in' })
+        }
+
+        //creating automatic session
+        const sessionId = crypto.randomBytes(10).toString('hex').toLowerCase();
+        await pool.query('INSERT INTO sessions (session_id, username) VALUES ($1, $2)', [sessionId, userName])
+        res.status(200).json({ sessionId })
     }
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-        return res.status(401).json({ error: "Invalid Credentials" })
+    catch (err) {
+        console.error(err);
+        return;
     }
-    const now = new Date();
-    if (user.expiry_date < now) {
-        return res.status(401).json({ status: 'Account Expired' })
-    }
-    const checkses = await pool.query('SELECT * FROM sessions WHERE username = $1', [userName])
-    if (checkses.rows.length > 0) {
-        return res.status(400).json({ error: 'Another device is logged in' })
-    }
-    //creating automatic session
-    const sessionId = crypto.randomBytes(10).toString('hex').toLowerCase();
-    await pool.query('INSERT INTO sessions (session_id, username) VALUES ($1, $2)', [sessionId, userName])
-    res.status(200).json({ sessionId })
 };
 
 //Autologin
@@ -89,7 +99,52 @@ export const autologin = async (req, res) => {
         return;
     }
 }
+//Renew Suscription
+export const renewSub = async (req, res) => {
+    const { sessionId, newCode } = req.body;
+    if (!sessionId || !newCode) {
+        return res.status(400).json({ error: 'User not Logged in or Code Empty code input' });
+    }
+    try {
+        const result = await pool.query('SELECT * FROM sessions WHERE session_id = $1', [sessionId]);
+        const sessionuser = result.rows[0];
+        if (!sessionuser) {
+            return res.status(400).json({ error: "Invalid Credentials" })
+        }
+        const user = sessionuser.username;
+        const realuser = await pool.query('SELECT * FROM xenon_user WHERE username = $1', [user])
+        if (!realuser.rows[0]) {
+            return res.status(400).json({ error: 'User not found' })
+        }
+        const codeCheck = await pool.query('SELECT * FROM codes WHERE code_string = $1 AND is_used = false', [newCode]);
+        if (codeCheck.rows.length === 0) {
+            return res.status(400).json({ error: 'Code does not exist' })
+        }
+        const { account_type } = codeCheck.rows[0];
+        const { expiry_date, role } = realuser.rows[0];
+        if (role !== account_type){
+            return res.status(400).json({error: `Invalid code: You is a ${account_type.toLowerCase()} code but you are using a ${role.toLowerCase()} account`})
+        }
+        const currentExpiry = new Date(expiry_date)
+        const now = new Date();
+        let baseDate;
+        if (currentExpiry < now) {
+            baseDate = now;
+        }
+        else {
+            baseDate = currentExpiry;
+        }
 
+        const newExpiryDate = new Date(baseDate);
+        newExpiryDate.setDate(baseDate.getDate() + 30);
+        await pool.query('UPDATE codes SET used_at = NOW(), is_used = true WHERE code_string = $1', [newCode])
+        await pool.query('UPDATE xenon_user SET expiry_date = $1, signup_code = $2 WHERE username = $3', [newExpiryDate, newCode, user]);
+        res.json({ success: true })
+    } catch (err) {
+        console.error(err)
+        return res.status(500).json({ error: 'Internal Server error' })
+    }
+}
 //Logout
 export const logout = async (req, res) => {
     try {
@@ -155,8 +210,8 @@ export const deleteAccount = async (req, res) => {
 
         await pool.query('DELETE FROM xenon_user WHERE username = $1', [user]);
         await pool.query('DELETE FROM sessions WHERE session_id = $1', [sessionId]);
-        res.json({success: true});
+        res.json({ success: true });
     } catch (err) {
-    console.error(err.message)
+        console.error(err.message)
     }
 }

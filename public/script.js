@@ -277,4 +277,14 @@ function clearr() {
     document.getElementById('newpass1').value = ''
 
 }
+
+
+
+
+
+
+
+
+
+
 fetchMovies();

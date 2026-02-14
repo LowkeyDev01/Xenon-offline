@@ -265,6 +265,24 @@
       </form>
     </div>
     <!--End of Login screen-->
+    <!--Renew sub Pop up-->
+    <div
+      class="h-screen w-full max-w-full px-2 flex inset-0 justify-center scale-100 duration-600 transition-all opacity-100 items-center fixed top-0 bg-black/10 backdrop-blur-sm">
+      <form class="max-w-sm w-full bg-zinc-900 rounded-xl" id="renewSubForm">
+        <div class="w-full py-2 text-gray-100 text-xs md:text-sm text-center border-b border-b-white rounded-t-xl">
+          Enter New Code</div>
+        <div class="w-full px-4 py-6 flex flex-col justify-center items-center">
+          <input type="text" id="newCode" class="w-full pl-2 py-2 rounded-md bg-white text-black text-xs"
+            placeholder="Enter New Code here..">
+            <p id="err" class="text-xs text-red-600 w-full text-align mt-2"></p>
+        </div>
+        <div class="w-full grid grid-cols-2">
+          <div class="text-white w-full p-2 text-center border border-zinc-900 text-sm rounded-bl-xl hover:border-white cursor-pointer">Cancel</div>
+          <input type="submit" value="Confirm" class="p-2 text-white bg-red-600 hover:bg-red-700 rounded-br-xl text-center text-sm cursor-pointer">
+        </div>
+      </form>
+    </div>
+
 
   </div>
 
