@@ -1,5 +1,5 @@
 const image = document.getElementById('image');
-const images = ['./images/as.png', './images/images.jpeg', './images/jk.jpeg', './images/js.jpeg']
+const images = ['./images/two.jpg', './images/three.jpg', './images/one.jpg', './images/four.jpg']
 let index = 0
 const leftBtn = document.getElementById('left');
 const rightBtn = document.getElementById('right');
@@ -12,6 +12,10 @@ const loginForm = document.getElementById('login');
 const uploadtrigger = document.getElementById('uploadplus')
 const uploadbox = document.getElementById('uploadbox')
 const closeBtn = document.getElementById('cancel');
+let globalExpireDays = null;
+
+
+
 
 rightBtn.addEventListener('click', () => {
     index++;
@@ -49,7 +53,14 @@ const pages = document.querySelectorAll('.panel')
 btns.forEach(btn => {
     btn.addEventListener('click', () => {
         const targetId = btn.dataset.target;
+        btns.forEach(b => {
+            b.classList.remove('text-purple-600')
+            b.classList.add('text-black')
+        })
+        btn.classList.remove('text-black')
+        btn.classList.add('text-purple-600')
 
+        document.getElementById('video').pause()
         pages.forEach(page => {
             page.classList.remove('flex', 'appear')
             page.classList.add('hidden')
@@ -81,10 +92,12 @@ movieSearch.addEventListener('click', () => {
 searchBar.addEventListener('input', (e) => {
     const value = e.currentTarget.value.trim();
 
+    clearTimeout(timerId)
+
     if (value.length > 0) {
         search(value)
     }
-    if (value.length === 0) {
+    else {
         fetchMovies()
     }
 })
@@ -92,9 +105,32 @@ searchBar.addEventListener('input', (e) => {
 const close = document.getElementById('move');
 close.addEventListener('click', () => {
     if (movieBox.classList.contains('scale-100')) {
-        movieBox.classList.remove('scale-100')
-        movieBox.classList.add('scale-0')
-        document.getElementById('video').muted = true
+        // 1. Close the UI
+        movieBox.classList.remove('scale-100');
+        movieBox.classList.add('scale-0');
+
+        // 2. Stop the video
+        const video = document.getElementById('video');
+        video.pause();
+        video.currentTime = 0
+
+        // 3. Reset the Play Icon
+        const icon = document.getElementById('playBtn');
+        if (icon) {
+            icon.setAttribute('data-lucide', 'play');
+            lucide.createIcons();
+        }
+
+        // 4. Reset the Progress Bar to empty
+        const progressBar = document.getElementById('progress-bar');
+        if (progressBar) {
+            progressBar.style.width = '0%';
+        }
+        const currentBlobUrl = video.src;
+        if (currentBlobUrl.startsWith('blob:')) {
+            URL.revokeObjectURL(currentBlobUrl);
+            console.log('RAM cleared!')
+        }
     }
 })
 
@@ -171,10 +207,14 @@ movieFile.addEventListener('change', () => {
 uploadForm.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!coverFile.files[0] || !movieFile.files[0] || !movieTitle || !category) {
+        document.getElementById('message').textContent = 'Incomplete fields'
         return;
     }
     console.log(coverFile.files[0], movieFile.files[0], movieTitle.value, category.value)
-
+    if (document.getElementById('movieTitle').value === '') {
+        document.getElementById('message').textContent = 'Movie title missing'
+        return;
+    }
     const formData = new FormData();
     formData.append('file', movieFile.files[0]);
     formData.append('cover', coverFile.files[0]);
@@ -182,6 +222,8 @@ uploadForm.addEventListener('submit', (e) => {
     formData.append('category', category.value);
     formData.append('sessionId', sessionId);
 
+    document.getElementById('message').textContent = ''
+    document.getElementById('message').textContent = 'Uploading please wait..'
     uploadFile(formData)
 })
 
@@ -225,6 +267,26 @@ logoutBtn.addEventListener('click', () => {
     console.log('logged out')
 })
 
+
+//Delete account
+const deletePopUp = document.getElementById('deletePopup');
+const closePop = document.getElementById('closeDelete');
+
+document.getElementById('delete').addEventListener('click', () => {
+    deletePopUp.classList.remove('scale-0', 'opacity-0')
+    deletePopUp.classList.add('scale-100', 'opacity-100')
+})
+closePop.addEventListener('click', () => {
+    deletePopUp.classList.remove('scale-100', 'opacity-100')
+    deletePopUp.classList.add('scale-0', 'opacity-0')
+})
+const deleteBtn = document.getElementById('deleteAcc');
+deleteBtn.addEventListener('click', () => {
+    deleteAccount(sessionId);
+    console.log('Account Deleted!')
+})
+
+
 signupForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const signuser = document.getElementById('userss').value;
@@ -234,13 +296,35 @@ signupForm.addEventListener('submit', (e) => {
     signUp(signuser, signpass, signcode);
 })
 
-document.getElementById('down').addEventListener('click', (e) => {
-    const fullUrl = e.currentTarget.href
-    const file_path = new URL(fullUrl).pathname;
+document.getElementById('down').addEventListener('click', async (e) => {
+    e.preventDefault();
 
-    const cleanPath = file_path.startsWith('/') ? file_path.substring(1) : file_path;
-    console.log(cleanPath)
-    download(cleanPath, sessionId)
+    const targetLink = e.currentTarget;
+    const fullUrlString = targetLink.href;
+    const fullUrl = new URL(fullUrlString);
+    const movieName = document.getElementById('title').textContent || 'movie';
+    const movieId = fullUrl.pathname.split('/').pop();
+
+    try {
+        // 1. Log to your backend
+        await download(movieId, sessionId);
+
+        // 2. FORCE DOWNLOAD (The "Ghost Link" Trick)
+        const ghostLink = document.createElement('a');
+        ghostLink.href = fullUrlString;
+
+        // This attribute is the magic that forces a download instead of playing
+        ghostLink.download = `${movieName}.mp4`;
+
+        document.body.appendChild(ghostLink);
+        ghostLink.click();
+        document.body.removeChild(ghostLink);
+
+    } catch (err) {
+        console.error("Logging failed", err);
+        // Fallback: just try to open it if logging crashes
+        window.location.href = fullUrlString;
+    }
 })
 
 const changePassForm = document.getElementById('ChangePassword');
@@ -278,13 +362,73 @@ function clearr() {
 
 }
 
+const renewSubForm = document.getElementById('renewSubForm');
+renewSubForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const newCode = document.getElementById('newCode').value;
+    renewSub(newCode)
+})
+const closeRenew = document.getElementById('closeRenewPop');
+closeRenew.addEventListener('click', () => {
+    const renewPopup = document.getElementById('renewSubPopup');
+    renewPopup.classList.remove('scale-100', 'opacity-100');
+    renewPopup.classList.add('scale-0', 'opacity-0');
+    document.getElementById('newCode').value = '';
+    document.getElementById('err').textContent = '';
+})
+
+//THe one on profile page
+const renewBtn = document.getElementById('renewADD');
+renewBtn.addEventListener('click', () => {
+    const renewPopup = document.getElementById('renewSubPopup');
+    renewPopup.classList.remove('scale-0', 'opacity-0');
+    renewPopup.classList.add('scale-100', 'opacity-100');
+})
 
 
 
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const movieBox = document.getElementById('movie-box');
+
+        if (movieBox.classList.contains('scale-100')) {
+            // 1. Close the UI
+            movieBox.classList.remove('scale-100');
+            movieBox.classList.add('scale-0');
+
+            // 2. Stop the video
+            const video = document.getElementById('video');
+            video.pause();
+            video.currentTime = 0
+
+            // 3. Reset the Play Icon
+            const icon = document.getElementById('playBtn');
+            if (icon) {
+                icon.setAttribute('data-lucide', 'play');
+                lucide.createIcons();
+            }
+
+            // 4. Reset the Progress Bar to empty
+            const progressBar = document.getElementById('progress-bar');
+            if (progressBar) {
+                progressBar.style.width = '0%';
+            }
+        }
+    }
+});
 
 
-
-
-
-
+document.getElementById('sheath').addEventListener('dblclick', () => {
+    if (document.getElementById('video').paused) {
+        document.getElementById('video').play();
+        const icon = document.getElementById('playBtn');
+        icon.setAttribute('data-lucide', 'pause');
+        lucide.createIcons();
+    } else {
+        document.getElementById('video').pause();
+        const icon = document.getElementById('playBtn');
+        icon.setAttribute('data-lucide', 'play');
+        lucide.createIcons();
+    }
+})
 fetchMovies();

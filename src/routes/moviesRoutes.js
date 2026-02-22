@@ -1,5 +1,5 @@
 import express from 'express';
-import { movies, search, tag, uploadHandler, download } from '../controllers/moviesController.js';
+import { movies, search, tag, uploadHandler, download, watchMovie } from '../controllers/moviesController.js';
 import rateLimit from 'express-rate-limit';
 
 const searchLimiter = rateLimit({
@@ -12,6 +12,7 @@ const router = express.Router();
 
 router.get('/all', movies);
 router.get('/search', searchLimiter, search);
+router.get('/watch/:movieId', searchLimiter, watchMovie);
 router.get('/:filter', tag);
 router.post('/upload', uploadHandler);
 router.post('/download', download);

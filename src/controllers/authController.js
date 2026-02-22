@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import pool from '../config/db.js';
 import crypto from 'crypto';
+import deleteExpiredMovies from '../services/deleteMovies.js';
 
 
 //Register
@@ -55,7 +56,7 @@ export const login = async (req, res) => {
 
         const now = new Date();
         if (user.expiry_date < now) {
-            return res.status(401).json({ status: 'Account Expired' })
+            return res.status(401).json({ error: 'Account Expired' })
         }
 
         const checkses = await pool.query('SELECT * FROM sessions WHERE username = $1', [userName])
@@ -122,8 +123,8 @@ export const renewSub = async (req, res) => {
         }
         const { account_type } = codeCheck.rows[0];
         const { expiry_date, role } = realuser.rows[0];
-        if (role !== account_type){
-            return res.status(400).json({error: `Invalid code: You is a ${account_type.toLowerCase()} code but you are using a ${role.toLowerCase()} account`})
+        if (role !== account_type) {
+            return res.status(400).json({ error: `Invalid code: You is a ${account_type.toLowerCase()} code but you are using a ${role.toLowerCase()} account` })
         }
         const currentExpiry = new Date(expiry_date)
         const now = new Date();
@@ -191,7 +192,8 @@ export const changePassword = async (req, res) => {
         res.json({ success: true })
     }
     catch (err) {
-        console.error(err.message);
+        rconsole.error(err);
+        return res.status(500).json({ error: 'Server Error' });
     }
 }
 export const deleteAccount = async (req, res) => {
@@ -207,11 +209,17 @@ export const deleteAccount = async (req, res) => {
             return res.status(400).json({ error: "User not LoggedIn" })
         }
         const user = sessionuser.username;
+        const checkRole = await pool.query('SELECT role FROM xenon_user WHERE username = $1', [user]);
 
+        if (checkRole.rows[0].role = 'CREATOR') {
+            await pool.query('UPDATE movies SET expiry_date = NOW() WHERE creator = $1', [user]);
+        }
         await pool.query('DELETE FROM xenon_user WHERE username = $1', [user]);
         await pool.query('DELETE FROM sessions WHERE session_id = $1', [sessionId]);
         res.json({ success: true });
+        deleteExpiredMovies();
     } catch (err) {
-        console.error(err.message)
+        console.error(err);
+        return res.status(500).json({ error: 'Server Error' });
     }
 }
