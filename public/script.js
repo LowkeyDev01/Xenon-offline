@@ -54,13 +54,13 @@ btns.forEach(btn => {
     btn.addEventListener('click', () => {
         const targetId = btn.dataset.target;
         btns.forEach(b => {
-            b.classList.remove('text-purple-600')
-            b.classList.add('text-black')
+            b.classList.remove('dark:text-white', 'text-black')
+            b.classList.add('dark:text-white/60', 'text-black/60')
         })
-        btn.classList.remove('text-black')
-        btn.classList.add('text-purple-600')
+        btn.classList.remove('dark:text-white/60', 'text-black/60')
+        btn.classList.add('dark:text-white', 'text-black')
 
-        document.getElementById('video').pause()
+        document.getElementById('my-video').pause()
         pages.forEach(page => {
             page.classList.remove('flex', 'appear')
             page.classList.add('hidden')
@@ -110,27 +110,9 @@ close.addEventListener('click', () => {
         movieBox.classList.add('scale-0');
 
         // 2. Stop the video
-        const video = document.getElementById('video');
+
         video.pause();
         video.currentTime = 0
-
-        // 3. Reset the Play Icon
-        const icon = document.getElementById('playBtn');
-        if (icon) {
-            icon.setAttribute('data-lucide', 'play');
-            lucide.createIcons();
-        }
-
-        // 4. Reset the Progress Bar to empty
-        const progressBar = document.getElementById('progress-bar');
-        if (progressBar) {
-            progressBar.style.width = '0%';
-        }
-        const currentBlobUrl = video.src;
-        if (currentBlobUrl.startsWith('blob:')) {
-            URL.revokeObjectURL(currentBlobUrl);
-            console.log('RAM cleared!')
-        }
     }
 })
 
@@ -194,7 +176,7 @@ clickVideo.addEventListener('click', () => {
 
 movieFile.addEventListener('change', () => {
     clickVideo.textContent = ''
-    const video = document.createElement('video')
+
 
     const url = URL.createObjectURL(movieFile.files[0]);
 
@@ -228,6 +210,7 @@ uploadForm.addEventListener('submit', (e) => {
 })
 
 closeBtn.addEventListener('click', () => {
+    console.log('hit1')
     uploadbox.classList.remove('scale-100')
     uploadbox.classList.remove('opacity-100')
     uploadbox.classList.add('scale-0')
@@ -397,16 +380,10 @@ window.addEventListener('keydown', (e) => {
             movieBox.classList.add('scale-0');
 
             // 2. Stop the video
-            const video = document.getElementById('video');
+
             video.pause();
             video.currentTime = 0
 
-            // 3. Reset the Play Icon
-            const icon = document.getElementById('playBtn');
-            if (icon) {
-                icon.setAttribute('data-lucide', 'play');
-                lucide.createIcons();
-            }
 
             // 4. Reset the Progress Bar to empty
             const progressBar = document.getElementById('progress-bar');
@@ -416,19 +393,137 @@ window.addEventListener('keydown', (e) => {
         }
     }
 });
-
-
-document.getElementById('sheath').addEventListener('dblclick', () => {
-    if (document.getElementById('video').paused) {
-        document.getElementById('video').play();
-        const icon = document.getElementById('playBtn');
-        icon.setAttribute('data-lucide', 'pause');
-        lucide.createIcons();
-    } else {
-        document.getElementById('video').pause();
-        const icon = document.getElementById('playBtn');
-        icon.setAttribute('data-lucide', 'play');
-        lucide.createIcons();
-    }
-})
 fetchMovies();
+
+
+
+const video = document.getElementById("my-video");
+const container = document.getElementById("video-container");
+const shield = document.getElementById("video-shield");
+const playBtn = document.getElementById("play-pause");
+const playIcon = document.getElementById("play-icon");
+const pauseIcon = document.getElementById("pause-icon");
+const muteBtn = document.getElementById("mute");
+const fullScreenBtn = document.getElementById("full-screen");
+const seekBar = document.getElementById("seek-bar");
+const curTimeText = document.getElementById("current-time");
+const durationText = document.getElementById("duration");
+
+function formatTime(seconds) {
+    let min = Math.floor(seconds / 60);
+    let sec = Math.floor(seconds % 60);
+    return `${min}:${sec < 10 ? '0' + sec : sec}`;
+}
+
+function togglePlay() {
+    if (video.paused) {
+        video.play();
+        playIcon.classList.add('hidden');
+        pauseIcon.classList.remove('hidden');
+    } else {
+        video.pause();
+        playIcon.classList.remove('hidden');
+        pauseIcon.classList.add('hidden');
+    }
+}
+
+// Click events now go on the SHIELD to protect the video
+shield.addEventListener("click", togglePlay);
+playBtn.addEventListener("click", togglePlay);
+
+muteBtn.addEventListener("click", () => {
+    video.muted = !video.muted;
+    muteBtn.classList.toggle('text-red-500', video.muted);
+});
+
+video.addEventListener("loadedmetadata", () => {
+    durationText.textContent = formatTime(video.duration);
+    seekBar.max = video.duration;
+});
+
+video.addEventListener("timeupdate", () => {
+    seekBar.value = video.currentTime;
+    curTimeText.textContent = formatTime(video.currentTime);
+});
+
+seekBar.addEventListener("input", () => {
+    video.currentTime = seekBar.value;
+});
+
+fullScreenBtn.addEventListener("click", async () => {
+    try {
+        if (!document.fullscreenElement) {
+            // 1. Go Fullscreen
+            await container.requestFullscreen();
+
+            // 2. Attempt to lock orientation to landscape
+            // Check if the orientation API is supported (mostly Android/Chrome)
+            if (screen.orientation && screen.orientation.lock) {
+                await screen.orientation.lock("landscape").catch(err => {
+                    console.log("Orientation lock failed or ignored:", err);
+                });
+            }
+        } else {
+            // Exit Fullscreen
+            await document.exitFullscreen();
+
+            // Unlock orientation so it returns to normal
+            if (screen.orientation && screen.orientation.unlock) {
+                screen.orientation.unlock();
+            }
+        }
+    } catch (err) {
+        console.error("Fullscreen/Orientation Error:", err);
+    }
+});
+
+// Sync the button icon/text when fullscreen changes (via Esc key or swipe)
+document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+        if (screen.orientation && screen.orientation.unlock) {
+            screen.orientation.unlock();
+        }
+    }
+});
+
+// Block keyboard "S" (some browsers use this as a shortcut to save)
+window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+    }
+    if (e.code === 'Space') {
+        e.preventDefault();
+        togglePlay();
+    }
+});
+
+let controlsTimeout;
+const controls = document.getElementById("video-controls");
+
+function showControls() {
+    // Show the controls
+    controls.style.opacity = "1";
+    container.style.cursor = "default";
+
+    // Clear any existing timer
+    clearTimeout(controlsTimeout);
+
+    // Set a new timer to hide them after 3 seconds of stillness
+    controlsTimeout = setTimeout(() => {
+        // Only hide if the video is actually playing
+        if (!video.paused) {
+            controls.style.opacity = "0";
+            container.style.cursor = "none"; // Also hide the mouse arrow for true cinema feel
+        }
+    }, 3000);
+}
+
+// Trigger this whenever the mouse moves inside the container
+container.addEventListener("mousemove", showControls);
+
+// Also show them if the video is paused (so you can see the play button)
+video.addEventListener("pause", () => {
+    clearTimeout(controlsTimeout);
+    controls.style.opacity = "1";
+    container.style.cursor = "default";
+});

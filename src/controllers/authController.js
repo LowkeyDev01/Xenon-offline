@@ -41,7 +41,7 @@ export const register = async (req, res) => {
 //Login
 export const login = async (req, res) => {
     const { userName, password } = req.body;
-    const result = await pool.query('SELECT * FROM xenon_user WHERE username = $1 AND expiry_date > NOW()', [userName]);
+    const result = await pool.query('SELECT * FROM xenon_user WHERE username = $1', [userName]);
 
     try {
         const user = result.rows[0];
@@ -55,7 +55,7 @@ export const login = async (req, res) => {
         }
 
         const now = new Date();
-        if (user.expiry_date < now) {
+        if (user.expiry_date <= now) {
             return res.status(401).json({ error: 'Account Expired' })
         }
 
@@ -91,8 +91,14 @@ export const autologin = async (req, res) => {
             return res.status(400).json({ error: 'User not found' })
         }
         const { username, role, expiry_date } = realuser.rows[0]
+
+        const now = new Date();
+        if (expiry_date <= now) {
+            return res.status(401).json({ error: 'Account Expired' })
+        }
+
         const creator = await pool.query('SELECT * FROM download_logs WHERE creator = $1', [username])
-        const creatorNum = creator.rows.length
+        const creatorNum = creator.rows.length;
         res.json({ username, role, expiry_date, creatorNum })
     }
     catch (err) {
@@ -119,12 +125,12 @@ export const renewSub = async (req, res) => {
         }
         const codeCheck = await pool.query('SELECT * FROM codes WHERE code_string = $1 AND is_used = false', [newCode]);
         if (codeCheck.rows.length === 0) {
-            return res.status(400).json({ error: 'Code does not exist' })
+            return res.status(400).json({ error: 'Code does not exist or has been used' })
         }
         const { account_type } = codeCheck.rows[0];
         const { expiry_date, role } = realuser.rows[0];
         if (role !== account_type) {
-            return res.status(400).json({ error: `Invalid code: You is a ${account_type.toLowerCase()} code but you are using a ${role.toLowerCase()} account` })
+            return res.status(400).json({ error: `Invalid code: This is a ${account_type.toLowerCase()} code but you are using a ${role.toLowerCase()} account` })
         }
         const currentExpiry = new Date(expiry_date)
         const now = new Date();

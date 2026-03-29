@@ -8,8 +8,8 @@ import crypto from 'crypto'
 
 // Helper to create the "Ticket"
 const generateSignedUrl = (movieId) => {
-    const secret = process.env.STREAM_SECRET; 
-    const hours = 3; 
+    const secret = process.env.STREAM_SECRET;
+    const hours = 3;
     const expires = Date.now() + (hours * 60 * 60 * 1000); // Current time + 6 hours
 
     // Create a "Hologram" using the ID and Expiry
@@ -24,13 +24,13 @@ const generateSignedUrl = (movieId) => {
 export const movies = async (req, res) => {
     const cacheKey = 'movies_list';
     const cached = await redisClient.get(cacheKey);
-    
+
     if (cached) {
         return res.json(JSON.parse(cached));
     }
 
     try {
-        const moviesResult = await pool.query('SELECT * FROM movies LIMIT 50 OFFSET 0');
+        const moviesResult = await pool.query('SELECT * FROM movies ORDER BY uploaded_at DESC LIMIT 50 OFFSET 0');
         if (moviesResult.rows.length === 0) {
             return res.status(400).json({ error: 'No movies found' });
         }
@@ -39,7 +39,7 @@ export const movies = async (req, res) => {
             file_id: movie.file_id,
             movie_name: movie.movie_name,
             // Simple direct link to your watch route
-            file_path: generateSignedUrl(movie.file_id), 
+            file_path: generateSignedUrl(movie.file_id),
             cover_img: movie.cover_img,
             expiry_date: movie.expiry_date
         }));
@@ -56,17 +56,17 @@ export const tag = async (req, res) => {
     const { filter } = req.params;
     let query;
     let params = [];
-    
+
     try {
         if (filter === 'All') {
-            query = 'SELECT * FROM movies LIMIT 50 OFFSET 0';
+            query = 'SELECT * FROM movies ORDER BY uploaded_at DESC LIMIT 50 OFFSET 0';
         } else {
-            query = 'SELECT * FROM movies WHERE category = $1';
+            query = 'SELECT * FROM movies WHERE category = $1 ORDER BY uploaded_at DESC';
             params = [filter];
         }
 
         const movies = await pool.query(query, params);
-        
+
         if (movies.rows.length === 0) {
             return res.status(404).json({ error: 'No movies found' });
         }
@@ -97,7 +97,7 @@ export const search = async (req, res) => {
     try {
         const searchItem = `%${q}%`;
         const result = await pool.query(
-            'SELECT * FROM movies WHERE movie_name ILIKE $1 OR category ILIKE $1 LIMIT 20', 
+            'SELECT * FROM movies WHERE movie_name ILIKE $1 OR category ILIKE $1 ORDER BY uploaded_at DESC LIMIT 20',
             [searchItem]
         );
 

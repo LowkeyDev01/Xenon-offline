@@ -1,0 +1,90 @@
+<div
+            class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 md:p-6 hidden"
+            id="controlsOverlay">
+            
+            <!-- Progress Bar -->
+            <div class="w-full mb-4">
+              <div
+                class="relative w-full h-1 md:h-1.5 bg-zinc-700 rounded-full overflow-hidden shadow-inner cursor-pointer hover:h-2 transition-all group/progress"
+                id="progress-container">
+                <div id="progress-bar"
+                  class="h-full w-0 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-indigo-600 shadow-lg transition-all duration-100 ease-out">
+                </div>
+                <div 
+                  class="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-lg opacity-0 group-hover/progress:opacity-100 transition-opacity"
+                  id="progressDot"
+                  style="left: 0%;">
+                </div>
+              </div>
+              <div class="flex justify-between text-white text-xs md:text-sm mt-2">
+                <span id="currentTime">0:00</span>
+                <span id="duration">0:00</span>
+              </div>
+            </div>
+
+            <!-- Control Buttons -->
+            <div class="flex justify-between items-center gap-2 md:gap-4">
+              
+              <!-- Left Controls -->
+              <div class="flex items-center gap-2 md:gap-4">
+                <button 
+                  class="flex justify-center items-center p-2 rounded-lg hover:bg-white/20 transition-colors text-white hover:scale-110"
+                  id="rewind"
+                  title="Rewind 10s">
+                  <i class="w-5 h-5 md:w-6 md:h-6" data-lucide="rotate-ccw"></i>
+                </button>
+
+                <button 
+                  class="flex justify-center items-center p-2 md:p-3 rounded-lg hover:bg-white/20 transition-colors text-white hover:scale-110 bg-purple-600 hover:bg-purple-700"
+                  id="playBtn"
+                  title="Play/Pause">
+                  <i class="w-6 h-6 md:w-7 md:h-7" data-lucide="play"></i>
+                </button>
+
+                <button 
+                  class="flex justify-center items-center p-2 rounded-lg hover:bg-white/20 transition-colors text-white hover:scale-110"
+                  id="skipForward"
+                  title="Skip 10s">
+                  <i class="w-5 h-5 md:w-6 md:h-6" data-lucide="rotate-cw"></i>
+                </button>
+              </div>
+
+              <!-- Right Controls -->
+              <div class="flex items-center gap-2 md:gap-4">
+                <button 
+                  class="flex justify-center items-center p-2 rounded-lg hover:bg-white/20 transition-colors text-white hover:scale-110"
+                  id="volumeBtn"
+                  title="Mute/Unmute">
+                  <i class="w-5 h-5 md:w-6 md:h-6" data-lucide="volume-2"></i>
+                </button>
+
+                <div class="hidden md:flex items-center gap-2 group/volume">
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="100" 
+                    value="100" 
+                    id="volumeSlider"
+                    class="w-16 h-1 bg-zinc-600 rounded-lg appearance-none cursor-pointer hover:h-1.5 transition-all"
+                  >
+                </div>
+
+                <button 
+                  class="flex justify-center items-center p-2 rounded-lg hover:bg-white/20 transition-colors text-white hover:scale-110"
+                  id="maximize"
+                  title="Fullscreen">
+                  <i class="w-5 h-5 md:w-6 md:h-6" data-lucide="maximize-2"></i>
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+
+
+
+           <button 
+            class="text-xs px-6 py-2 rounded-md bg-gray-700 dark:bg-zinc-800 text-white md:text-sm hover:opacity-80 transition-opacity w-full md:w-auto"
+            onclick="document.getElementById('movie-box').classList.remove('scale-100'); document.getElementById('movie-box').classList.add('scale-0');">
+            Close
+          </button>

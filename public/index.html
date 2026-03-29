@@ -17,14 +17,14 @@
       <div>
         <p
           class="text-lg inline-block font-bold lg:text-2xl bg-linear-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-          MOVIES</p>
+          Home</p>
       </div>
       <div class="flex justify-end w-full items-center">
         <i data-lucide="search" class="w-5 h-5 font-bold cursor-pointer" id="searchmovies"></i>
       </div>
     </div>
     <div class="max-w-10xl w-full relative shadow-xl rounded-xl">
-      <img src="./images/two.jpg" class="h-60 w-full object-top object-cover rounded-xl md:h-70 lg:h-[20rem]"
+      <img src="./images/two.jpg" class="h-60 w-full object-top object-cover rounded-xl md:h-70 lg:h-[30rem]"
         id="image"><!--Image Preview stuf-->
       <div
         class="absolute w-8 h-8 bg-gray-100 rounded-full top-2/5 left-0 flex justify-center items-center hover:opacity-50 lg:w-12 lg:h-12"
@@ -56,6 +56,9 @@
         Adventure</p>
       <p
         class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
+        Action</p>
+      <p
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
         Horror</p>
       <p
         class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
@@ -66,23 +69,14 @@
       <p
         class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
         Scifi</p>
+      <p
+        class="tab py-1 px-4 bg-white border text-black rounded-3xl text-xs dark:text-white cursor-pointer dark:bg-black lg:text-sm">
+        Others</p>
     </div>
 
     <!--Movie box!-->
 
-    <div class="w-full max-w-10xl hja flex-wrap flex justify-center gap-4 items-center">
-
-
-      <div class="w-full py-4 relative md:max-w-90 text-white lg:max-w-100 mee" data-title="Maid-sama_-_06_BD_1080p_DHD"
-        data-file_path="../uploads/d2b1b7af343a5a6b7aa8-1771336584430.mp4">
-        <img src="images/three.jpg" class="h-50 w-full object-fill rounded-lg">
-        <div class="absolute py-2 px-2 w-full grid grid-cols-2 justify-center items-end h-full bg-linear-to-b from-transparent to-black top-0 pointer-events-auto z-10">
-          <p class="flex flex-wrap">Fssss ssss sssss sssss</p>
-          <p class="text-end text-red-600">3 days left</p>
-        </div>
-      </div>
-
-
+    <div class="w-full max-w-10xl hja flex-wrap flex gap-0 md:gap-2 justify-center mb-14">
 
     </div>
 
@@ -91,61 +85,78 @@
     <!--Movie player box-->
 
     <div
-      class="fixed min-h-screen z-40 scale-0 inset-0 opacity-0 transition-all pointer-events-auto flex flex-col items-center bg-white dark:bg-zinc-950 w-full rounded-lg right-0 duration-600"
+      class="fixed min-h-screen z-40 scale-0 inset-0 opacity-0 transition-all pointer-events-auto flex flex-col items-center overflow-y-auto bg-black dark:bg-black w-full rounded-lg right-0 duration-600"
       id="movie-box">
+      <p class="py-2 font-sans text-lg md:text-xl w-full flex justify-center text-center mb-4 text-white" id="title">
+      </p>
 
-      <p class="py-2 font-sans text-lg md:text-xl w-full flex justify-center text-center" id="title"></p>
-      <div class="w-full relative flex justify-center items-center">
-        <video class="max-w-lg w-full md:max-w-4xl lg:max-w-6xl" src="" id="video">
+      <div id="video-container" oncontextmenu="return false;"
+        class="group relative w-full max-w-4xl bg-black overflow-hidden shadow-2xl rounded-xl">
+
+        <div id="video-shield" class="absolute inset-0 z-10 cursor-pointer"></div>
+
+        <video id="my-video" class="w-full" disablePictureInPicture controlsList="nodownload" src="">
         </video>
-        <div
-          class="absolute top-0 bg-transparent flex justify-center items-end w-full pointer-events-auto inset-0 h-full"
-          id="sheath">
-          <div class="grid grid-rows-2 text-white" id="controls">
 
-            <div class="max-w-sm w-full flex justify-self-center justify-center gap-5 px-1  rounded-2xl">
-              <div class="flex justify-end items-center" id="rewind">
-                <i class="w-6 h-6" data-lucide="chevron-first"></i>
-              </div>
-              <div class="flex justify-center cursor-pointer items-center">
-                <i class="w-8 h-8" data-lucide="play" id="playBtn"></i>
-              </div>
-              <div class="flex justify-start items-center" id="skipForward">
-                <i class="w-6 h-6" data-lucide="chevron-last"></i>
-              </div>
-              <div class="flex justify-center items-center" id="maximize">
-                <i class="w-6 h-6" data-lucide="maximize-2"></i>
+        <div id="video-controls"
+          class="absolute bottom-0 left-0 right-0 p-4 z-20 bg-gradient-to-t from-black/95 via-black/40 to-transparent transition-opacity duration-300 opacity-0 group-hover:opacity-100 flex flex-col gap-2">
+
+          <input type="range" id="seek-bar" value="0" min="0" step="0.1"
+            class="w-full h-1 bg-transparent appearance-none cursor-pointer accent-blue-500">
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <button id="play-pause" class="text-white hover:text-blue-400 transition-colors focus:outline-none">
+                <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="currentColor"
+                  viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 hidden" fill="currentColor"
+                  viewBox="0 0 24 24">
+                  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                </svg>
+              </button>
+
+              <div class="text-white text-xs font-mono space-x-1">
+                <span id="current-time">0:00</span>
+                <span class="text-zinc-500">/</span>
+                <span id="duration">0:00</span>
               </div>
             </div>
-            <div class="w-full max-w-lg md:max-w-6xl px-4 mt-6">
-              <div
-                class="relative w-full min-w-xs md:min-w-xl h-1.5 bg-zinc-800 rounded-full overflow-hidden shadow-inner"
-                id="progress-container">
 
-                <div id="progress-bar"
-                  class="h-full w-0 rounded-full bg-linear-to-r from-blue-500 via-purple-500 to-indigo-600 shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-300 ease-out">
-                  <div class="w-full h-full bg-white/10 opacity-50"></div>
-                </div>
+            <div class="flex items-center gap-4">
+              <button id="mute" class="text-white hover:text-blue-400 focus:outline-none">
+                <svg id="mute-svg" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 9v6m0 0l-3-3m3 3l3-3m-3 3V3" />
+                </svg>
+              </button>
 
-              </div>
+              <button id="full-screen" class="text-white hover:text-blue-400 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="flex flex-col justify-center items-center">
-        <a href="Screencast from 2026-01-03 18-30-53.webm"
-          class="text-xs px-4 py-2 rounded-md mt-4 bg-purple-500 text-white lg:text-base" download id="down">Download
-          now</a>
-      </div>
+      <a href="Screencast from 2026-01-03 18-30-53.webm"
+        class="text-xs px-6 py-2 rounded-md bg-purple-500 hover:bg-purple-600 text-white md:text-sm transition-colors w-full md:w-auto text-center"
+        download id="down">
+        Download Now
+      </a>
     </div>
 
     <!--Movie player box up!-->
 
     <!--Search Input-->
     <input type="search" placeholder="Search movies"
-      class="w-full absolute -top-20 lg:w-1/2 bg-white text-black text-xs p-3 rounded-xl duration-1000 z-50"
-      id="search">
+      class="w-full absolute -top-20 lg:w-1/2 bg-white text-black text-xs p-3 duration-1000 z-50" id="search">
 
     <!--Search Input up!-->
 
@@ -175,24 +186,23 @@
           Profile</p>
       </div>
       <div class="flex justify-end w-full items-center">
-        <p class="text-sm text-red-600 cursor-pointer" id="logoutPops">Log out</p>
+        <!-- <p class="text-sm text-red-600 cursor-pointer" id="logoutPops">Log out</p> -->
       </div>
     </div>
-    <div class="max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 p-2.5 flex rounded-2xl">
+    <div class="max-w-5xl w-full justify-center items-center bg-transparent p-2.5 flex flex-col rounded-2xl">
       <div>
-        <img class="w-20 h-20 rounded-full flex flex-1" src="images/pfp.jpg">
+        <img class="w-32 h-32 rounded-full" src="images/pfp.jpg" id="pfp">
       </div>
-      <div class="flex flex-2 px-3 flex-col justify-center">
+      <div class="flex px-3 mt-1 flex-col justify-center">
         <p class="text-base font-bold" id="user">Kenny</p>
-        <p class="text-sm" id="role">User</p>
       </div>
     </div>
-    <div class="flex max-w-10xl w-full mt-2 text-xs lg:text-lg text-red-600 rounded-lg justify-center items-center"
+    <div class="flex max-w-10xl w-full text-xs lg:text-sm text-red-600 rounded-lg justify-center items-center"
       id="expire-warning">
       Warning! Account Expires in 30d
     </div>
     <p class="w-full py-2 hidden text-sm max-w-5xl statname">Stats</p>
-    <div class="max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-4 hidden grid-cols-3 rounded-2xl stats">
+    <div class="max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-4 hidden grid-cols-3 rounded stats">
       <div class="flex flex-col justify-center items-center">
         <p class="text-lg font-bold" id="earnings">&#x20A6;</p>
         <p class="text-xs">Earnings</p>
@@ -202,27 +212,29 @@
         <p class="text-xs">No. of Downloads</p>
       </div>
       <div class="flex flex-col justify-center items-center">
-        <p class="text-lg font-bold"></p>
-        <p class="text-xs">Total Videos Uploaded</p>
+        <i class="w-7 mb-1 h-7 text-green-600" data-lucide="circle-check"></i>
+        <p class="text-xs">Verified</p>
       </div>
     </div>
     <p class="w-full max-w-5xl py-3 text-sm">Settings</p>
-    <div
-      class="flex max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-3 text-sm px-4 rounded-lg justify-between items-center mb-1"
+    <div class="flex max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-3 text-sm px-4 justify-between items-center"
       id="meuver">
       <p class="">Change Password</p>
       <i data-lucide="chevron-right"></i>
     </div>
-    <div
-      class="flex max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-3 text-sm px-4 rounded-lg justify-between items-center mb-1"
+    <div class="flex max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-3 text-sm px-4 justify-between items-center"
       id="renewADD">
       <p class="">Renew Subscription</p>
       <i data-lucide="chevron-right"></i>
     </div>
-    <div
-      class="flex max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-3 text-sm px-4 rounded-lg justify-between items-center mb-1"
+    <div class="flex max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-3 text-sm px-4 justify-between items-center"
+      id="logoutPops">
+      <p class="">Logout</p>
+      <i data-lucide="chevron-right"></i>
+    </div>
+    <div class="flex max-w-5xl w-full bg-gray-50 dark:bg-zinc-900 py-3 text-sm px-4 justify-between items-center"
       id="delete">
-      <p class="">Delete Account</p>
+      <p class="text-red-600">Delete Account</p>
       <i data-lucide="chevron-right"></i>
     </div>
 
@@ -303,35 +315,60 @@
       class="h-screen absolute flex flex-col justify-center items-center text-center top-0 w-full bg-white dark:bg-zinc-950 duration-700"
       id="login-screen">
       <form
-        class="w-full lg:max-w-lg flex flex-col justify-center items-center lg:h-80 p-4 bg-gray-100 dark:bg-zinc-900 rounded-lg"
+        class="w-full md:max-w-md flex flex-col justify-center items-center h-screen my-4 p-4 bg-gray-100 dark:bg-zinc-900 rounded-lg"
         id="login"><!--Login From-->
-        <p class="text-lg font-bold">Log in to Account</p>
-        <p class="w-full text-left text-sm mb-1">Username</p>
-        <input type="text" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="Username"
-          id="username">
-        <p class="w-full text-left text-sm my-1">Password</p>
-        <input type="password" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="Password"
-          id="password">
+
+        <p class="text-2xl font-bold font-mono tracking-wide">Login</p>
+        <p class="font-mono text-xs tracking-tight mt-4">Enter details to Log in to account</p>
+
+        <div
+          class="flex w-full justify-center items-center gap-2 border border-transparent dark:border-b-white border-b-black">
+          <i class="w-6 h-6 ml-2" data-lucide="user"></i>
+          <input type="text" class="w-full bg-transparent outline-none py-4 font-sans text-sm" placeholder="Username"
+            id="username">
+        </div>
+        <div
+          class="flex w-full justify-center items-center gap-2 border mt-2 border-transparent dark:border-b-white border-b-black">
+          <i class="w-5 h-5 ml-3" data-lucide="lock"></i>
+          <input type="password" class="w-full bg-transparent outline-none py-4 font-sans text-sm"
+            placeholder="Password" id="password">
+        </div>
         <input type="submit"
-          class="bg-linear-to-r from-blue-500 to-purple-600 rounded-md mt-4 px-6 py-1 text-white text-sm" value="Login">
+          class="bg-linear-to-r from-blue-500 to-purple-600 font-sans rounded mt-4 w-full py-3 text-white text-sm"
+          value="Login">
         <p class="text-blue-600 underline mt-5 text-sm" id="show-sign">No account yet? Register!</p>
       </form>
 
+
       <form
-        class="w-full lg:max-w-lg hidden flex-col justify-center items-center lg:h-80 p-4 bg-gray-100 dark:bg-zinc-900 rounded-lg"
+        class="w-full md:max-w-md hidden flex-col justify-center items-center h-screen my-4 p-4 bg-gray-100 dark:bg-zinc-900 rounded-lg"
         id="sign-up"><!--Sign up From-->
-        <p class="text-lg font-bold">Create Account</p>
-        <p class="w-full text-left text-sm mb-1">Username</p>
-        <input type="text" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="Username" id="userss">
-        <p class="w-full text-left text-sm my-1">Password</p>
-        <input type="text" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="Password" id="pass">
-        <p class="w-full text-left text-sm my-1">Signup Code</p>
-        <input type="text" class="bg-white w-full rounded-lg p-2 text-black text-xs" placeholder="Signup code"
-          id="SignupCode">
+
+        <p class="text-2xl font-bold font-mono tracking-wide">Create an Account</p>
+        <p class="font-mono text-xs tracking-tight mt-4">Enter details to Log in to account</p>
+
+        <div
+          class="flex w-full justify-center items-center gap-2 border border-transparent dark:border-b-white border-b-black">
+          <i class="w-6 h-6 ml-2" data-lucide="user"></i>
+          <input type="text" class="w-full bg-transparent outline-none py-4 font-sans text-sm" placeholder="Username"
+            id="userss">
+        </div>
+        <div
+          class="flex w-full justify-center items-center gap-2 border mt-2 border-transparent dark:border-b-white border-b-black">
+          <i class="w-5 h-5 ml-3" data-lucide="lock"></i>
+          <input type="text" class="w-full bg-transparent outline-none py-4 font-sans text-sm" placeholder="Password"
+            id="pass">
+        </div>
+        <div
+          class="flex w-full justify-center items-center gap-2 border mt-2 border-transparent dark:border-b-white border-b-black">
+          <i class="w-5 h-5 ml-3" data-lucide="key"></i>
+          <input type="text" class="w-full bg-transparent outline-none py-4 font-sans text-sm"
+            placeholder="Enter Code here..." id="SignupCode">
+        </div>
         <input type="submit"
-          class="bg-linear-to-r from-blue-500 to-purple-600 rounded-md mt-4 px-6 py-1 text-white text-sm"
+          class="bg-linear-to-r from-blue-500 to-purple-600 font-sans rounded mt-4 w-full py-3 text-white text-sm"
           value="Create Account">
-        <p class="text-blue-600 underline mt-5 text-sm" id="show-log">Log in into account</p>
+        <p class="text-blue-600 underline mt-5 text-sm" id="show-log">Log in into Account</p>
       </form>
     </div>
     <!--End of Login screen-->
@@ -363,30 +400,32 @@
 
   <!--Nav section-->
   <div
-    class="appear z-50 left-0 right-0 mx-auto p-2 lg:p-0 flex bg-white pointer-events-auto backdrop-blur-xs fixed bottom-4 lg:w-md w-70 duration-1000 rounded-3xl justify-around items-center border border-gray-100/20 shadow-md  lg:py-3"
+    class="appear z-50 left-0 py-1.5 right-0 mx-auto flex bg-white dark:bg-zinc-950 md:rounded-4xl pointer-events-auto fixed bottom-0 lg:w-sm w-full max-w-sm duration-1000 justify-around items-center shadow-md  md:py-2 lg:py-3 lg:border dark:border-white/20 border-black/40 lg:bottom-4"
     id="nav">
-    <div class="flex flex-col p-2 text-purple-600 lg:p-0 justify-center items-center btn" data-target="Movies"
-      id="move">
+    <div class="flex flex-col p-2 lg:p-0 justify-center dark:text-white text-black items-center btn"
+      data-target="Movies" id="move">
       <i data-lucide="clapperboard" class="w-5 h-5 lg:text-xl"></i>
-      <p class="text-xs hidden lg:flex">Movies</p>
+      <p class="text-xs lg:flex">Home</p>
     </div>
-    <div class="flex flex-col text-black p-2 lg:p-0 justify-center items-center btn" data-target="Library">
+    <div class="flex flex-col p-2 lg:p-0 justify-center dark:text-white/60 text-black/60 items-center btn"
+      data-target="Library">
       <i data-lucide="library" class="w-5 h-5 lg:text-xl"></i>
-      <p class="text-xs hidden lg:flex">Library</p>
+      <p class="text-xs lg:flex">Library</p>
     </div>
     <div
-      class="hidden flex-col p-2  lg:px-4 dark:text-white  bg-blue-500 dark:bg-purple-600 rounded-full justify-center items-center"
+      class="flex-col hidden text-white bg-blue-500 dark:bg-purple-600 h-12 w-12 rounded-full justify-center items-center"
       id="uploadplus">
-      <i data-lucide="upload" class="w-5 h-5 lg:text-xl"></i>
-      <p class="text-xs hidden lg:flex">Post</p>
+      <i data-lucide="plus" class="w-6 h-6"></i>
     </div>
-    <div class="flex flex-col p-2 text-black lg:p-0 justify-center items-center btn" data-target="Sub">
-      <i data-lucide="wifi" class="w-5 h-5 lg:text-xl"></i>
-      <p class="text-xs hidden lg:flex">Sub</p>
+    <div class="flex flex-col p-2 lg:p-0 justify-center dark:text-white/60 text-black/60 items-center btn"
+      data-target="Sub">
+      <i data-lucide="wifi" class="w-5 h-5"></i>
+      <p class="text-xs lg:flex">Sub</p>
     </div>
-    <div class="flex flex-col p-2 text-black lg:p-0 justify-center items-center btn" data-target="Profile">
+    <div class="flex flex-col p-2 lg:p-0 justify-center dark:text-white/60 text-black/60 items-center btn"
+      data-target="Profile">
       <i data-lucide="user" class="w-5 h-5 lg:text-xl"></i>
-      <p class="text-xs hidden lg:flex">Profile</p>
+      <p class="text-xs lg:flex">Profile</p>
     </div>
   </div>
   <!--End of Nav-->
@@ -394,7 +433,7 @@
   <!--Upload box-->
 
   <div
-    class="h-screen scale-0 opacity-0 flex px-4 justify-center text-black items-center bg-black/50 w-full fixed inset-0 backdrop-blur-xs top-0 duration-600"
+    class="h-screen scale-0 z-100 opacity-0 flex px-4 justify-center text-black items-center bg-black/50 w-full fixed inset-0 backdrop-blur-xs top-0 duration-600"
     id="uploadbox">
 
     <form class="max-w-md w-full bg-white rounded-xl p-4" id="Uploadform">
@@ -403,7 +442,9 @@
           class="bg-linear-to-r inline-block from-blue-500 to-purple-600 bg-clip-text text-transparent text-base mb-2 font-bold">
           Upload
         </p>
-        <i class="w-5 h-5" data-lucide="x" id="cancel"></i>
+        <div id="cancel">
+          <i class="w-5 h-5" data-lucide="x"></i>
+        </div>
       </div>
       <div
         class="h-40 w-full border border-dotted rounded-md border-black flex flex-col items-center gap-1 justify-center"
