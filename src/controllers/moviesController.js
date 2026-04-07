@@ -144,7 +144,7 @@ export const uploadHandler = [upload.fields([
         const relativeImg = `uploads/${coverImgPath}`
         const now = new Date();
         const expiry_date = new Date();
-        expiry_date.setDate(now.getDate() + 5);
+        expiry_date.setDate(now.getDate() + 35);
 
         await pool.query('INSERT INTO movies (movie_name, file_path, cover_img, category, creator, uploaded_at, expiry_date) VALUES ($1, $2, $3, $4, $5, $6, $7)',
             [title, relativeFile, relativeImg, category, username, now, expiry_date]);

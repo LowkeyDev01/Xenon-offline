@@ -177,13 +177,14 @@ clickVideo.addEventListener('click', () => {
 movieFile.addEventListener('change', () => {
     clickVideo.textContent = ''
 
-
     const url = URL.createObjectURL(movieFile.files[0]);
 
-    video.src = url
-    video.className = 'object-cover w-full h-full'
-    video.controls = true;
-    clickVideo.appendChild(video)
+    // FIX: Use a separate video element for preview, not the global 'video'
+    const previewVideo = document.createElement('video')
+    previewVideo.src = url
+    previewVideo.className = 'object-cover w-full h-full'
+    previewVideo.controls = true;
+    clickVideo.appendChild(previewVideo)
 })
 
 uploadForm.addEventListener('submit', (e) => {
@@ -216,12 +217,16 @@ closeBtn.addEventListener('click', () => {
     uploadbox.classList.add('scale-0')
     uploadbox.classList.add('opacity-0')
 
-    //Putting the formal UI
+    //Putting the formal UI back
     clickImg.textContent = ''
-    clickImg.innerHTML = '<p class="text-xs">Tap to Upload Image</p>'
+    clickImg.innerHTML = '<i data-lucide="camera" class="w-8 h-8 "></i><p class="text-xs">Tap to Upload Image</p>'
     movieTitle.value = ''
+    
+    // FIX: Clear the video properly
     clickVideo.textContent = ''
-    clickVideo.innerHTML = '<p class="text-xs">Tap to Upload Video</p>'
+    clickVideo.innerHTML = '<i data-lucide="video" class="w-8 h-8"></i><p class="text-xs">Tap to Upload Video</p>'
+    movieFile.value = '' // Reset the file input
+    coverFile.value = '' // Reset the cover input
 })
 
 autologin();
@@ -375,17 +380,13 @@ window.addEventListener('keydown', (e) => {
         const movieBox = document.getElementById('movie-box');
 
         if (movieBox.classList.contains('scale-100')) {
-            // 1. Close the UI
             movieBox.classList.remove('scale-100');
             movieBox.classList.add('scale-0');
 
-            // 2. Stop the video
+            // FIX: Use correct video ID
+            document.getElementById('my-video').pause();
+            document.getElementById('my-video').currentTime = 0;
 
-            video.pause();
-            video.currentTime = 0
-
-
-            // 4. Reset the Progress Bar to empty
             const progressBar = document.getElementById('progress-bar');
             if (progressBar) {
                 progressBar.style.width = '0%';

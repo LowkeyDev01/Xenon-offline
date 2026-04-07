@@ -222,6 +222,7 @@ export const deleteAccount = async (req, res) => {
         }
         await pool.query('DELETE FROM xenon_user WHERE username = $1', [user]);
         await pool.query('DELETE FROM sessions WHERE session_id = $1', [sessionId]);
+        await pool.query('DELETE FROM download_logs WHERE creator = $1', [user]);
         res.json({ success: true });
         deleteExpiredMovies();
     } catch (err) {

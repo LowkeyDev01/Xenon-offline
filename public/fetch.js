@@ -1,7 +1,7 @@
-const fetchUrl = 'http://localhost:8080'
+const fetchUrl = 'http://10.117.166.172:8080'
 const sessionId = localStorage.getItem('sessionId');
 const logoutBtn = document.getElementById('logout');
-displayMovie()
+// displayMovie()
 
 async function displayMovie() {
     document.querySelectorAll('.mee').forEach(movie => {
@@ -260,7 +260,7 @@ async function renderMovies(res) {
 
         // Create main container
         const container = document.createElement('div')
-        container.className = 'group relative overflow-hidden rounded-lg mee cursor-pointer transition-all duration-300 hover:shadow-2xl'
+        container.className = 'group relative overflow-hidden mee cursor-pointer transition-all duration-300 hover:shadow-2xl'
         container.dataset.title = re.movie_name;
         container.dataset.Id = re.file_id;
         container.dataset.file_path = re.file_path;
